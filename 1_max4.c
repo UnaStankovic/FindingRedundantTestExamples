@@ -1,6 +1,4 @@
-
-A straightforward approach is the following
-
+//This is just a simple example on which we should try to think about all the test examples and observe the results for them 
 #include <stdio.h>
 
 int main( void )
