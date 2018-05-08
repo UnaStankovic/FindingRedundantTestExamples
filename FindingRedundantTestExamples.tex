@@ -2,7 +2,35 @@
 
 \documentclass[a4paper]{article}
 
+\usepackage{listings}
 \usepackage{color}
+ 
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+ 
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+ 
+\lstset{style=mystyle}
+
 \usepackage{url}
 \usepackage[T2A]{fontenc} % enable Cyrillic fonts
 \usepackage[utf8]{inputenc} % make weird characters work
@@ -33,16 +61,27 @@ U ovom tekstu je ukratko prikazan proces kreiranja metodologije za otkrivanje re
 \newpage
 
 \section{Uvod}
-\label{sec:uvod}
+\label{sec:introduction}
 Redudantni test primeri su oni test primeri koji pokrivaju iste delove koda ili pokrivaju delimično iste delove koda, tj. njihovo pokrivanje se preklapa.\\\\
 Pronalaženje redudantnih test primera predstavlja veoma bitan deo testiranja softvera kojem do danas nije pridodavan veliki značaj. Razlog koji stoji iza toga je što još uvek nije razvijena adekvatna metodologija koja bi programerima i testerima omogućila da bez dodatnog troška (posebno vremenskog) otkriju test primere koji su redudantni, a potom ih i uklone.\\\\
 Značaj otkrivanja redudantnih test primera se posebno ističe u projektima otvorenog koda u kojima svi učesnici u stvaranju istog (a može ih biti i nekoliko stotina) prilikom dodavanja novih delova koda dodaju i nove test primere, bez ikakve provere da li takvi test primeri već postoje i da li se tim test primerima pokrivaju neki delovi koda koji su već pokriveni drugim test primerima. Iz tog razloga broj testova za određeni kod može narasti do nerazumnih granica, što još više otežava rad nad softverom otvorenog koda, kao i otkrivanje grešaka, propusta i slično. \\\\
 U radu će biti iznet detaljan proces razmišljanja, testiranja i kreiranja metodologije za otkrivanje ovakvih test primera, sa posebnim osvrtom na alat llc u okviru LLVM-a. 
 
 \section{Eksperimenti}
-\label{sec:prvi}
+\label{sec:first}
+U ovoj sekciji će biti izneti osnovni eksperimenti koje smo vršili kako bismo došli do određenih zaključaka.
 
+\subsection{Jednostavni primeri}
+\label{sec:simpleexamples}
 
+Najpre, pokušaćemo sa dodavanjem nekoliko jednostavnih primera, koji su, pre svega, jednostavni za analizu, a potom ćemo posmatrati ponašanje primenom različitih test primera, od kojih će neki biti redudantni.
+
+\subsubsection{Maksimum 4 broja}
+Prvi primer koji posmatramo je otkrivanje maksimuma 4 broja. Kod je napisan u programskom jeziku C.
+
+\lstinputlisting[language=C]{1_max4.c}
+
+Sada, kreirajmo neke test primere:
 
 \section{Zaključak}
 \label{sec:zakljucak}

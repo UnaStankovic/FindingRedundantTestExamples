@@ -9,31 +9,24 @@ int main( void )
     printf( "Enter four integers (separate them with spaces): " );
     scanf( "%d %d %d %d", &a, &b, &c, &d );
 
-
     largest = smallest = a;
 
-    if ( largest < b )
-    {
+    if ( largest < b ){
         largest = b;
     }
-    else if ( b < smallest )
-    {
+    else if ( b < smallest ){
         smallest = b;
     }
-    if ( largest < c )
-    {
+    if ( largest < c ){
         largest = c;
     }
-    else if ( c < smallest )
-    {
+    else if ( c < smallest ){
         smallest = c;
     }
-    if ( largest < d )
-    {
+    if ( largest < d ){
         largest = d;
     }
-    else if ( d < smallest )
-    {
+    else if ( d < smallest ){
         smallest = d;
     }
 
