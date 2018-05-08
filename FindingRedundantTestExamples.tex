@@ -1,0 +1,55 @@
+% !TEX encoding = UTF-8 Unicode
+
+\documentclass[a4paper]{article}
+
+\usepackage{color}
+\usepackage{url}
+\usepackage[T2A]{fontenc} % enable Cyrillic fonts
+\usepackage[utf8]{inputenc} % make weird characters work
+\usepackage{graphicx}
+
+\usepackage[english,serbian]{babel}
+%\usepackage[english,serbianc]{babel} %ukljuciti babel sa ovim opcijama, umesto gornjim, ukoliko se koristi cirilica
+
+\usepackage[unicode]{hyperref}
+\hypersetup{colorlinks,citecolor=green,filecolor=green,linkcolor=blue,urlcolor=blue}
+
+%\newtheorem{primer}{Пример}[section] %ćirilični primer
+\newtheorem{primer}{Primer}[section]
+
+\begin{document}
+
+\title{Otkrivanje redudantnih test primera\\ \small{Seminarski rad u okviru kursa\\Verifikacija softvera\\ Matematički fakultet}}
+
+\author{Una Stanković, Mirko Brkušanin, Miloš Samardžija\\ una\_stankovic@yahoo.com, mi13211@alas.matf.bg.ac.rs, miloss208@gmail.com}
+\date{8.~maj 2018.}
+\maketitle
+
+\abstract{
+U ovom tekstu je ukratko prikazan proces kreiranja metodologije za otkrivanje redudantnih test primera. Autori su u njemu izneli proces razmišljanja i testiranja sa ciljem dolaska do određenih zaključaka i potencijalnog rešenja problema.}
+
+\tableofcontents
+
+\newpage
+
+\section{Uvod}
+\label{sec:uvod}
+Redudantni test primeri su oni test primeri koji pokrivaju iste delove koda ili pokrivaju delimično iste delove koda, tj. njihovo pokrivanje se preklapa.\\\\
+Pronalaženje redudantnih test primera predstavlja veoma bitan deo testiranja softvera kojem do danas nije pridodavan veliki značaj. Razlog koji stoji iza toga je što još uvek nije razvijena adekvatna metodologija koja bi programerima i testerima omogućila da bez dodatnog troška (posebno vremenskog) otkriju test primere koji su redudantni, a potom ih i uklone.\\\\
+Značaj otkrivanja redudantnih test primera se posebno ističe u projektima otvorenog koda u kojima svi učesnici u stvaranju istog (a može ih biti i nekoliko stotina) prilikom dodavanja novih delova koda dodaju i nove test primere, bez ikakve provere da li takvi test primeri već postoje i da li se tim test primerima pokrivaju neki delovi koda koji su već pokriveni drugim test primerima. Iz tog razloga broj testova za određeni kod može narasti do nerazumnih granica, što još više otežava rad nad softverom otvorenog koda, kao i otkrivanje grešaka, propusta i slično. \\\\
+U radu će biti iznet detaljan proces razmišljanja, testiranja i kreiranja metodologije za otkrivanje ovakvih test primera, sa posebnim osvrtom na alat llc u okviru LLVM-a. 
+
+\section{Eksperimenti}
+\label{sec:prvi}
+
+
+
+\section{Zaključak}
+\label{sec:zakljucak}
+
+\addcontentsline{toc}{section}{Literatura}
+\appendix
+\bibliography{seminarski} 
+\bibliographystyle{plain}
+
+\end{document}
