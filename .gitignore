@@ -1,7 +1,7 @@
 *.c~
 *.py~
 *.log
-*.aux 
+*.aux
 *.out
 *.toc
 *.synctex.gz

@@ -49,8 +49,8 @@
 
 \title{Otkrivanje redudantnih test primera\\ \small{Seminarski rad u okviru kursa\\Verifikacija softvera\\ Matematički fakultet}}
 
-\author{Una Stanković, Mirko Brkušanin, Miloš Samardžija\\ una\_stankovic@yahoo.com, mi13211@alas.matf.bg.ac.rs, miloss208@gmail.com}
-\date{8.~maj 2018.}
+\author{Una Stanković, Mirko Brkušanin, Miloš Samardžija\\ una\_stankovic@yahoo.com, mirkobrkusanin94@gmail.com, miloss208@gmail.com}
+\date{9.~maj 2018.}
 \maketitle
 
 \abstract{
@@ -66,6 +66,55 @@ Redudantni test primeri su oni test primeri koji pokrivaju iste delove koda ili 
 Pronalaženje redudantnih test primera predstavlja veoma bitan deo testiranja softvera kojem do danas nije pridodavan veliki značaj. Razlog koji stoji iza toga je što još uvek nije razvijena adekvatna metodologija koja bi programerima i testerima omogućila da bez dodatnog troška (posebno vremenskog) otkriju test primere koji su redudantni, a potom ih i uklone.\\\\
 Značaj otkrivanja redudantnih test primera se posebno ističe u projektima otvorenog koda u kojima svi učesnici u stvaranju istog (a može ih biti i nekoliko stotina) prilikom dodavanja novih delova koda dodaju i nove test primere, bez ikakve provere da li takvi test primeri već postoje i da li se tim test primerima pokrivaju neki delovi koda koji su već pokriveni drugim test primerima. Iz tog razloga broj testova za određeni kod može narasti do nerazumnih granica, što još više otežava rad nad softverom otvorenog koda, kao i otkrivanje grešaka, propusta i slično. \\\\
 U radu će biti iznet detaljan proces razmišljanja, testiranja i kreiranja metodologije za otkrivanje ovakvih test primera, sa posebnim osvrtom na alat llc u okviru LLVM-a. 
+
+\section{Ideje}
+\label{sec:ideas}
+U nastavku će biti predstavljene neke ideje za rešavalje problema pronalaženja redudantnih testova.
+
+\subsection{Poređenje testova pomoću pokrivenosti koda}
+\label{sec:idea1}
+Kao što je već pomenuto u sekciji \ref{sec:introduction} redudantni testovi su oni koji pokrivaju iste delove kôda. Prema tome problem se može svesti na prepoznavanje delova kôda koji neki test primer pokriva, a zatim pronaći drugi test koji pokriva isti kôd ili neki njegov nadskup. U tom slučaju će prvi test biti redudantan (komentar: da li je ova definicija prikladana? pronaći i proveriti posebne slučajeve). \\\\
+Ovo nas navodi na to da nam je potreban neki način praćenja naredbi u kôdu (ili blokova kôda) koji su izvršeni što možemo postići nekom instumentalizacijom kôda. Kao osnovna ideja se javlja izmena izvornog kôda koja će imati u sebi neku vrstu globanog niza flegova (eng. flags) koji se aktiviraju kada je neki kôd dostignut ili neki poseban uslov ispunjen. U svom najjednostavnijem obliku ti flegovi mogu postojati na početku svakog bloka kôoda i na početku svake grane. Time je jednoznačno određena svaka putanja kroz kôd ne uzimajući u obzir višestruka izvršavanja tela petlji koje će biti posebno spomenute kasnije. Ako se ograničimo na to da su vrednosi flegova 0 ili 1, gde 0 predstavlja da kôd nije izvršen, a 1 da jeste, onda se provera da li su izvršene iste putanje svodi na poređenje niza flegova. Ukoliko su isti i testovi su isti. Provera da li je jedan test sadržan u drugom se takođe jednostavno proverava u linearnom vremenu po broju flegova. Dodatna pogodnost ograničavanja vrednosti na samo 0 ili 1 je da se može izvršiti optimizacija korišćenjem bitovskih operatora. Alternativno svaki fleg može biti poseban brojač koji se uvećava svaki put za jedan što umanjuje efikasnost ali doprinosi tome da se razlikuju testovi koji imaju različit broj iteracija kroz istu petlju.
+\begin{lstlisting}
+int abs(int x)
+{
+	int value;
+	if (x>0)
+	{
+		value = x;
+	}
+	else
+	{
+		value = -x;
+	}
+	return value;
+}
+\end{lstlisting}
+
+\begin{lstlisting}
+extern int flags[3]; //koji se inicijalizuje na 0
+
+int abs(int x)
+{
+	flags[0] = 1;
+	int value;
+	if (x>0)
+	{
+		flags[1] = 1;
+		value = x;
+	}
+	else
+	{
+		flags[2] = 1;
+		value = -x;
+	}
+	return value;
+}
+\end{lstlisting}
+
+Za ovakvu izmenu kôda se može koristi Clang tačnije njegova biblioteka LibTooling uz pomoću koje je moguće obići AST stablo i izvršiti ,,source to source'' izmene. Drugi način bi bio korišćenje nekog drugog alata koji prati izvršene naredbe kao što je gcov koji dolazi sa GCC prevodiocem. Ovaj pristup se može pokazati manje efikasnim zbog velikog broja redudantnih informacija koje nudi. Ukoliko se radi pod pretpostavkom su svi testovi ispravni gcov će nuditi po jedan broj za svaku liniju kôda gde može biti dovoljan samo jedan po bloku. Provera da li je jedan test redudantan u odnosu na drugi će i dalje biti linearna ali ovoga puta po broju linija koda, a ne po broju osnovnih blokova\footnote{osnovni blok je niz instrukcija u kome će se sve instrukcije izvršiti od početka do kraja, nema labela (može samo prva), nema skoka i slično} \\\\
+Dok je provera između dva testa linearna to nije slučaj ukoliko se vrši kompletna provera svih testova. Ukoliko želimo da nađemo najmanji skup testova koji vrši isto pokrivanje kao i ceo skup onda nailazimo na problem minimalnog pokrivanja skupa. Ovo je poznati optimizacioni problem za koji je dokazano da je NP kompletan. Naš problem se jednostavno svodi na problem pokrivanja skupa. Skup koji pokrivamo je celokupni niz flegova. Svaki fleg je jedan element, a svaki test je jedan podskup koji sadrži samo one elemente koji odgovaraju aktiviranim flegovima za taj test. Problem pokrivanja skupa ima i približna rešenja koja se mogu iskoristiti zarad bolje vremenske efikasnosti. \\\\
+
 
 \section{Eksperimenti}
 \label{sec:first}
