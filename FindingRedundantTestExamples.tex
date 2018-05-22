@@ -141,6 +141,26 @@ Izlaz: 4 1
 
 U ovoj sekciji će biti predstavljeni alati korišćeni za analizu.
 
+Kako bi dobili informacija o izvršenim linijama u izvornom kodu prilikom pokretanja pograma koristimo alata gcov. Prvo je potrebno prevesti odgovarajući .c fajl sa narednim opcijama
+
+\begin{verbatim}
+gcc -g -Wall -fprofile-arcs -ftest-coverage -O0 test.c -o test
+\end{verbatim}
+
+Zatim se pokreće program \textbf{test} koji generiše .gcda fajl sa informacijama o izvršenim linijama. Iz tog fajla pomoću alata gcov dobijamo .gcov tekstualni fajl.
+
+\begin{verbatim}
+gcov test.gcda
+\end{verbatim}
+
+Primer dobijenog .gcov fajla.
+\lstinputlisting[language=C]{1_max4.gcov}
+
+Neophodno je izvršiti neku vrstu parsiranja .gcov fajla kako bi izvukli inormacije o izvršenim linijama. Ono što želimo da dobijemo je niz celobrojnih vrednosti koji dalje možemo da poredimo da drugim izvršavanjima istog fajla.
+
+Postoji par detalja koje smo izostavili. Naime gcov samo daje informaciju da li je linija izvršena, ako u jednoj liniji postoji više od jedne naredbe nismo sigurni koja je tačno naredba je izvršena (sve ili samo jedna).
+
+
 \section{LLVM}
 \label{sec:llvm}
 
