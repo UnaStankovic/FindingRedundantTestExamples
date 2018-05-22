@@ -50,7 +50,7 @@
 \title{Otkrivanje redudantnih test primera\\ \small{Seminarski rad u okviru kursa\\Verifikacija softvera\\ Matematički fakultet}}
 
 \author{Una Stanković, Mirko Brkušanin, Miloš Samardžija\\ una\_stankovic@yahoo.com, mirkobrkusanin94@gmail.com, miloss208@gmail.com}
-\date{9.~maj 2018.}
+\date{maj 2018.}
 \maketitle
 
 \abstract{
@@ -128,7 +128,7 @@ Najpre, pokušaćemo sa dodavanjem nekoliko jednostavnih primera, koji su, pre s
 \subsubsection{Maksimum i minimum 4 broja}
 Prvi primer koji posmatramo je otkrivanje maksimuma i minimuma 4 broja. Kod je napisan u programskom jeziku C.
 
-\lstinputlisting[language=C]{1_max4.c}
+\lstinputlisting[language=C]{Primeri/01/1_max4.c}
 
 Sada, kreirajmo neke test primere:
 \begin{verbatim}
@@ -154,11 +154,14 @@ gcov test.gcda
 \end{verbatim}
 
 Primer dobijenog .gcov fajla.
-\lstinputlisting[language=C]{1_max4.gcov}
+\lstinputlisting[language=C]{Primeri/01/1_max4.c.gcov}
 
 Neophodno je izvršiti neku vrstu parsiranja .gcov fajla kako bi izvukli inormacije o izvršenim linijama. Ono što želimo da dobijemo je niz celobrojnih vrednosti koji dalje možemo da poredimo da drugim izvršavanjima istog fajla.
 
-Postoji par detalja koje smo izostavili. Naime gcov samo daje informaciju da li je linija izvršena, ako u jednoj liniji postoji više od jedne naredbe nismo sigurni koja je tačno naredba je izvršena (sve ili samo jedna).
+Postoji par detalja koje smo izostavili. Naime gcov samo daje informaciju da li je linija izvršena, ako u jednoj liniji postoji više od jedne naredbe nismo sigurni koja je tačno naredba je izvršena (sve ili samo jedna). Zbog toga je prvo potrebno izvršiti neku vrstu formatiranja izvornog koda. To možemo postići nekim dodatnim alatom kao što je \textbf{clang-formater}.
+
+%TODO Objasniti situaciju ako se greska javi u poslednjoj liniji funkcije tj. u return-u. Naredba će biti izvršena bez obzira da li dolazi do greške ili ne. Međutim ako smatramo da su svi test primeri ispravni i da prolaze možemo ignorisati ovu sitaciju.
+
 
 
 \section{LLVM}
