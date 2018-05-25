@@ -1,3 +1,4 @@
+import os 
 def file_opener(filename):
 	try:
 		f = open(filename, 'r')
@@ -14,6 +15,15 @@ def file_chooser():
 		return file_chooser()
 	else:
 		return name
+
+def find_files(ext, path):
+	files_found = []
+	for root, dirs, files in os.walk(path):
+		for f in files:
+			if f.endswith(ext) == True:
+				files_found.append(root+ '/' +f)
+	return files_found 
+	
 #ARRAY WORK		
 def coverage_array_creator(f):
 	coverage_array = []
