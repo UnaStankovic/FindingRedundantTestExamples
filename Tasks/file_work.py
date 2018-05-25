@@ -21,6 +21,7 @@ def coverage_array_creator(f):
 		line = line.lstrip()
 		line = line.split(":")
 		coverage_array.append(line[0])
+	coverage_array = [x for x in coverage_array if x != '-']
 	print("The coverage array is the following")
 	print(coverage_array)
 	return coverage_array
