@@ -73,7 +73,7 @@ U nastavku će biti predstavljene neke ideje za rešavalje problema pronalaženj
 
 \subsection{Poređenje testova pomoću pokrivenosti koda}
 \label{sec:idea1}
-Kao što je već pomenuto u sekciji \ref{sec:introduction} redudantni testovi su oni koji pokrivaju iste delove kôda. Prema tome problem se može svesti na prepoznavanje delova kôda koji neki test primer pokriva, a zatim pronaći drugi test koji pokriva isti kôd ili neki njegov nadskup. U tom slučaju će prvi test biti redudantan (komentar: da li je ova definicija prikladana? pronaći i proveriti posebne slučajeve). \\\\
+Kao što je već pomenuto u sekciji \ref{sec:introduction} redudantni testovi su oni koji pokrivaju iste delove kôda. Prema tome problem se može svesti na prepoznavanje delova kôda koji neki test primer pokriva, a zatim pronaći drugi test koji pokriva isti kôd ili neki njegov nadskup. U tom slučaju će prvi test biti redudantan. \\\\
 Ovo nas navodi na to da nam je potreban neki način praćenja naredbi u kôdu (ili blokova kôda) koji su izvršeni što možemo postići nekom instumentalizacijom kôda. Kao osnovna ideja se javlja izmena izvornog kôda koja će imati u sebi neku vrstu globanog niza flegova (eng. flags) koji se aktiviraju kada je neki kôd dostignut ili neki poseban uslov ispunjen. U svom najjednostavnijem obliku ti flegovi mogu postojati na početku svakog bloka kôoda i na početku svake grane. Time je jednoznačno određena svaka putanja kroz kôd ne uzimajući u obzir višestruka izvršavanja tela petlji koje će biti posebno spomenute kasnije. Ako se ograničimo na to da su vrednosi flegova 0 ili 1, gde 0 predstavlja da kôd nije izvršen, a 1 da jeste, onda se provera da li su izvršene iste putanje svodi na poređenje niza flegova. Ukoliko su isti i testovi su isti. Provera da li je jedan test sadržan u drugom se takođe jednostavno proverava u linearnom vremenu po broju flegova. Dodatna pogodnost ograničavanja vrednosti na samo 0 ili 1 je da se može izvršiti optimizacija korišćenjem bitovskih operatora. Alternativno svaki fleg može biti poseban brojač koji se uvećava svaki put za jedan što umanjuje efikasnost ali doprinosi tome da se razlikuju testovi koji imaju različit broj iteracija kroz istu petlju.
 \begin{lstlisting}
 int abs(int x)
@@ -128,7 +128,7 @@ Najpre, pokušaćemo sa dodavanjem nekoliko jednostavnih primera, koji su, pre s
 \subsubsection{Maksimum i minimum 4 broja}
 Prvi primer koji posmatramo je otkrivanje maksimuma i minimuma 4 broja. Kod je napisan u programskom jeziku C.
 
-\lstinputlisting[language=C]{Primeri/01/1_max4.c}
+\lstinputlisting[language=C]{../Examples/01/1_max4.c}
 
 Sada, kreirajmo neke test primere:
 \begin{verbatim}
@@ -154,9 +154,11 @@ gcov test.gcda
 \end{verbatim}
 
 Primer dobijenog .gcov fajla.
-\lstinputlisting[language=C]{Primeri/01/1_max4.c.gcov}
+\lstinputlisting[language=C]{../Examples/01/1_max4.c.gcov}
 
-Neophodno je izvršiti neku vrstu parsiranja .gcov fajla kako bi izvukli inormacije o izvršenim linijama. Ono što želimo da dobijemo je niz celobrojnih vrednosti koji dalje možemo da poredimo da drugim izvršavanjima istog fajla.
+Lako se uočava da imamo 1 za svaku granu programa koja je izvršena, ako je program dobro struktuiran. Ako se u neku granu nije ušlo to je označeno nizom znakova taraba. 
+
+Neophodno je izvršiti neku vrstu parsiranja .gcov fajla kako bi izvukli informacije o izvršenim linijama. Ono što želimo da dobijemo je niz celobrojnih vrednosti koji dalje možemo da poredimo sa drugim izvršavanjima istog fajla. Ako bismo za dva test primera imali iste nizove karaktera u fajlu, odnosno isti skup izvršenih grana za njih onda smatramo da pokrivaju iste grane. 
 
 Postoji par detalja koje smo izostavili. Naime gcov samo daje informaciju da li je linija izvršena, ako u jednoj liniji postoji više od jedne naredbe nismo sigurni koja je tačno naredba je izvršena (sve ili samo jedna). Zbog toga je prvo potrebno izvršiti neku vrstu formatiranja izvornog koda. To možemo postići nekim dodatnim alatom kao što je \textbf{clang-formater}.
 
