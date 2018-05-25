@@ -19,12 +19,36 @@ def check_input():
 	else:
 		return name
 
+def run_gcov():
+	found_files = find_files(".gcda", ".")
+	for f in found_files:
+		print(f)
+		command = 'gcov ' + f
+		try:
+			check_output(['bash', '-c', command])
+			print("Successfully generated .c.gcov.")
+		except CalledProcessError:
+			print("CalledProcessError")
+			exit()
+	return 1
+	
+def run_test():
+	command = './test'
+	try:
+		check_output(['bash', '-c', command])
+		print("Successfully runned test.")
+		return run_gcov()
+	except CalledProcessError:
+		print("CalledProcessError")
+		exit()
+
 def run_gcc(found):
 	command = 'gcc -g -Wall -fprofile-arcs -ftest-coverage -O0 -o test ' + ' '.join(found)
 	try:
 		check_output(['bash', '-c', command])
-		print("Successfully compiled with gcc.")
-		return 
+		print("Successfully compiled with gcc.\
+			The test sample will be runned now.")
+		return run_test()
 	except CalledProcessError:
 		print("CalledProcessError")
 		exit()
