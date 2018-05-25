@@ -1,6 +1,7 @@
 #Mini script file which generates .c.gcov files, automatically, from source code and test examples.
 import os 
 from subprocess import check_output, CalledProcessError
+from file_work import coverage_array_creator, file_opener
 
 def find_files(ext, path):
 	files_found = []
@@ -19,39 +20,40 @@ def check_input():
 	else:
 		return name
 
-def run_gcov():
-	found_files = find_files(".gcda", ".")
-	for f in found_files:
-		print(f)
-		command = 'gcov ' + f
-		try:
-			check_output(['bash', '-c', command])
-			print("Successfully generated .c.gcov.")
-		except CalledProcessError:
-			print("CalledProcessError")
-			exit()
-	return 1
-	
-def run_test():
-	command = './test'
+def check_outputs(command, string):
 	try:
 		check_output(['bash', '-c', command])
-		print("Successfully runned test.")
-		return run_gcov()
+		print(string)
 	except CalledProcessError:
 		print("CalledProcessError")
 		exit()
 
+def merge_gcovs():
+	found_files = find_files(".gcov", ".")
+	merged = []
+	for f in found_files:
+		opened = file_opener(f)
+		merged.append(coverage_array_creator(opened))
+	merged = [item for sublist in merged for item in sublist]
+	print("Merged gcovs for one test:")
+	print(merged)
+	
+def run_gcov():
+	found_files = find_files(".gcda", ".")
+	for f in found_files:
+		command = 'gcov ' + f
+		check_outputs(command,"Successfully generated .c.gcov.")
+	merge_gcovs()
+	
+def run_test():
+	command = './test'
+	check_outputs(command, "Successfully runned test.")
+	run_gcov()
+
 def run_gcc(found):
 	command = 'gcc -g -Wall -fprofile-arcs -ftest-coverage -O0 -o test ' + ' '.join(found)
-	try:
-		check_output(['bash', '-c', command])
-		print("Successfully compiled with gcc.\
-			The test sample will be runned now.")
-		return run_test()
-	except CalledProcessError:
-		print("CalledProcessError")
-		exit()
+	check_outputs(command,"Successfully compiled with gcc.The test sample will be runned now." )
+	run_test()
 			
 def main():
 	print("Insert file extension and path:")

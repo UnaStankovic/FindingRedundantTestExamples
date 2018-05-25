@@ -1,7 +1,7 @@
 #Parser for information extraction on executed lines. Output is an array of covered lines in source file 
 from file_work import file_chooser, file_opener, coverage_array_creator
 
-def extract_lines(first, second):
+def compare_lines(first, second):
 	array1 = coverage_array_creator(first)
 	array2 = coverage_array_creator(second)
 	counter = 0
@@ -21,7 +21,7 @@ def main():
 	first = file_opener(f)
 	second = file_opener(s)
 	
-	extract_lines(first, second)
+	compare_lines(first, second)
 
 if __name__ == "__main__":
 	main()
