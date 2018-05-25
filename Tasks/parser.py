@@ -1,5 +1,4 @@
 #Parser for information extraction on executed lines. Output is an array of covered lines in source file 
-#parser za izvlacenje informacija o izvrsenim linijama (Izlaz: Niz pokrivenih linija po izvornim fajlovima u nastavku NPL)
 from file_work import file_chooser, file_opener, coverage_array_creator
 
 def extract_lines(first, second):
