@@ -1,4 +1,6 @@
 import os 
+import pickle
+
 def file_opener(filename):
 	try:
 		f = open(filename, 'r')
@@ -22,7 +24,17 @@ def find_files(ext, path):
 		for f in files:
 			if f.endswith(ext) == True:
 				files_found.append(root+ '/' +f)
-	return files_found 
+	return files_found
+
+def write_array_to_file(array, filename):	
+	with open(filename, 'wb') as f:
+		pickle.dump(array, f)
+	
+def read_array_from_file(filename):
+	array = []
+	with open(filename, 'rb') as f:
+		array = pickle.load(f)
+	return array
 	
 #ARRAY WORK		
 def coverage_array_creator(f):
