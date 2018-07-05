@@ -35,7 +35,14 @@ def read_array_from_file(filename):
 	with open(filename, 'rb') as f:
 		array = pickle.load(f)
 	return array
-	
+
+def delete_by_extension(dir_name, extension):
+	dir = os.listdir(dir_name)
+
+	for item in dir:
+		if item.endswith(extension):
+			os.remove(os.path.join(dir_name, item))
+
 #ARRAY WORK		
 def coverage_array_creator(f):
 	coverage_array = []
@@ -44,6 +51,6 @@ def coverage_array_creator(f):
 		line = line.split(":")
 		coverage_array.append(line[0])
 	coverage_array = [x for x in coverage_array if x != '-']
-	print("The coverage array is the following")
-	print(coverage_array)
+	#print("The coverage array is the following")
+	#print(coverage_array)
 	return coverage_array
