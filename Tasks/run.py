@@ -1,7 +1,9 @@
 from subprocess import check_output, CalledProcessError, Popen, PIPE
-from file_work import coverage_array_creator, file_opener, find_files, write_array_to_file, delete_by_extension
+from file_work import coverage_array_creator, file_opener, find_files, write_array_to_file, read_array_from_file, delete_by_extension
+from min_cover import min_set_coverage_optimal, min_set_coverage_greedy
 import os
-import time
+import numpy as np
+
 
 def check_outputs(command, string):
 	try:
@@ -42,14 +44,25 @@ def run_tests(path):
 	delete_by_extension(os.curdir, ".gcda")
 	delete_by_extension(os.curdir, ".gcov")
 	delete_by_extension(os.curdir, ".gcno")
-	#command = './test'
-	#check_outputs(command, "Successfully runned test.")
-	#return run_gcov()
 
 def run_gcc(found):
 	command = 'gcc -g -Wall -fprofile-arcs -ftest-coverage -O0 -o test ' + ' '.join(found)
 	check_outputs(command,"Successfully compiled with gcc.The test sample will be run now." )
-	#return run_tests()
+	
+def find_redundant():
+	pathdata_files = find_files(".pathdata", ".")
+	all_data = []
+	for f in pathdata_files:
+		array_data = np.array(read_array_from_file(f))
+		all_data.append(array_data)
+	all_data = np.array(all_data)
+	
+	#print(all_data)
+	print("Greedy algorithm")
+	print(min_set_coverage_greedy(all_data))
+	print("Optimal algorithm")
+	print(min_set_coverage_optimal(all_data))
+	#delete_by_extension(os.curdir, ".pathdata")
 	
 def merge_gcovs(test_name):
 	found_files = find_files(".gcov", ".")
@@ -66,5 +79,5 @@ def merge_gcovs(test_name):
 	prefix = "merged_gcov"
 	extension = "pathdata"
 	full_name = prefix+"."+test_name+"."+extension
-	write_array_to_file(merged_int, full_name) #"merged_gcov.0.pathdata"
+	write_array_to_file(merged_int, full_name)
 	
