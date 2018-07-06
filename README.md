@@ -7,7 +7,12 @@ LIBS:
 - numpy (Python2.7)
 
 V1.
-
+1. run python script "Tasks/gen_gcov.py"
+2. produce info about tests (such as extension and path)
+   Example:
+   $ python gen_gconv.py
+   $ c
+   $ ../Examples/01
 
 V2.
 1. Start Makefile (it compiles custom library for the tests that are given)

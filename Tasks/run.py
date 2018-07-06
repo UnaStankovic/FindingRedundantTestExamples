@@ -28,8 +28,9 @@ def run_test(command, input):
 	#print(p.stdout.read())
 	p.wait()
 	
-def run_tests(path):
-	test_info_file = os.path.join(path,"test_info.run")
+def run_tests(test_info_file):
+	#test_info_file = os.path.join(path,"test_info.run")
+	#test_info_file = "test_info.run"
 	with open(test_info_file) as f:
 		test_info = f.readlines()
 	test_info = [x.rstrip() for x in test_info] 
@@ -44,12 +45,14 @@ def run_tests(path):
 	delete_by_extension(os.curdir, ".gcda")
 	delete_by_extension(os.curdir, ".gcov")
 	delete_by_extension(os.curdir, ".gcno")
+	test_names = test_info[0::3]
+	return test_names
 
 def run_gcc(found):
 	command = 'gcc -g -Wall -fprofile-arcs -ftest-coverage -O0 -o test ' + ' '.join(found)
 	check_outputs(command,"Successfully compiled with gcc.The test sample will be run now." )
 	
-def find_redundant():
+def find_redundant(test_names):
 	pathdata_files = find_files(".pathdata", ".")
 	all_data = []
 	for f in pathdata_files:
@@ -59,11 +62,23 @@ def find_redundant():
 	
 	#print(all_data)
 	print("Greedy algorithm")
-	print(min_set_coverage_greedy(all_data))
+	res = min_set_coverage_greedy(all_data)
+	print(res)
+	print_redundant_names(res, test_names)
+	#print(min_set_coverage_greedy(all_data))
+	
 	print("Pair-redundant algorithm")
-	print(min_set_coverage_redundant_pairs(all_data))
+	res = min_set_coverage_redundant_pairs(all_data)
+	print(res)
+	print_redundant_names(res, test_names)
+	#print(min_set_coverage_redundant_pairs(all_data))
+	
 	print("Optimal algorithm")
-	print(min_set_coverage_optimal(all_data))
+	res = min_set_coverage_optimal(all_data)
+	print(res)
+	print_redundant_names(res, test_names)
+	#print(min_set_coverage_optimal(all_data))
+	
 	delete_by_extension(os.curdir, ".pathdata")
 	
 def merge_gcovs(test_name):
@@ -82,4 +97,10 @@ def merge_gcovs(test_name):
 	extension = "pathdata"
 	full_name = prefix+"."+test_name+"."+extension
 	write_array_to_file(merged_int, full_name)
+	
+def print_redundant_names(redundant_array, test_names):
+	print("Redundant tests:")
+	for i in range(redundant_array.size):
+		if (redundant_array[i]==0):
+			print(test_names[i])
 	

@@ -6,6 +6,7 @@ from min_cover import test_algorithms
 
 			
 def main():
+	print(os.getcwd())
 	print("Insert file extension and path:")
 	ext = input()
 	print("Insert path without last /:")
@@ -13,10 +14,10 @@ def main():
 	os.chdir(path)
 	found = find_files(ext, '.')
 	run_gcc(found)
-	run_tests(path)
+	test_names = run_tests("test_info.run")
 	#if run_gcc(found) == 1:
 		#merge_gcovs()
-	find_redundant()
+	find_redundant(test_names)
 	
 if __name__ == "__main__":
 	main()
