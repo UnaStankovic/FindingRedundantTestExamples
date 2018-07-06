@@ -1,6 +1,6 @@
 from subprocess import check_output, CalledProcessError, Popen, PIPE
 from file_work import coverage_array_creator, file_opener, find_files, write_array_to_file, read_array_from_file, delete_by_extension
-from min_cover import min_set_coverage_optimal, min_set_coverage_greedy
+from min_cover import min_set_coverage_optimal, min_set_coverage_greedy, min_set_coverage_redundant_pairs
 import os
 import numpy as np
 
@@ -60,9 +60,11 @@ def find_redundant():
 	#print(all_data)
 	print("Greedy algorithm")
 	print(min_set_coverage_greedy(all_data))
+	print("Pair-redundant algorithm")
+	print(min_set_coverage_redundant_pairs(all_data))
 	print("Optimal algorithm")
 	print(min_set_coverage_optimal(all_data))
-	#delete_by_extension(os.curdir, ".pathdata")
+	delete_by_extension(os.curdir, ".pathdata")
 	
 def merge_gcovs(test_name):
 	found_files = find_files(".gcov", ".")
@@ -74,7 +76,7 @@ def merge_gcovs(test_name):
 	print("Merged gcovs for one test:")
 	#print(merged)
 	
-	merged_int = [ int(i) if i!="#####" else 0 for i in merged]
+	merged_int = [ 1 if i!="#####" else 0 for i in merged]
 	print(merged_int)
 	prefix = "merged_gcov"
 	extension = "pathdata"

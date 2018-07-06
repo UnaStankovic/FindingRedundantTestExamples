@@ -1,7 +1,10 @@
 from file_work import read_array_from_file
+from itertools import chain, combinations
 import numpy as np
 
 
+def full_cover(all_data):
+    return np.maximum.reduce(all_data)
 	
 # Compares two arrays of ints and checks if one is a subset of the other
 # returns (Bool, Bool) 
@@ -34,11 +37,11 @@ def compare_arrays(size, array1, array2):
             i = i+1
         return (False, True)
 		
-		
-# Find minimal set coverage from given array of sets
+# Finds minimal set coverage from given array of sets
 # Returns array of zeros and ones where ones represent indexes of sets which
-# should be included in optimal set coverage
-def min_set_coverage_optimal(all_data):
+# should be included in minimal set coverage
+# Results is not optimal as it only checks pairs for redundancies
+def min_set_coverage_redundant_pairs(all_data):
     num_of_arrays, size_of_array = all_data.shape
     added_sets = np.ones(num_of_arrays, dtype=int)
     for i in range(num_of_arrays):
@@ -55,8 +58,32 @@ def min_set_coverage_optimal(all_data):
                         break
     return added_sets
     
+			
+# Finds minimal set coverage from given array of sets
+# Returns array of zeros and ones where ones represent indexes of sets which
+# should be included in optimal set coverage
+def min_set_coverage_optimal(all_data):
+    max_cover = full_cover(all_data)
+    max_cover_sum = sum(max_cover)
+    for i in range(1, all_data.shape[0]+1):
+        test_combinations = list(combinations(all_data, i))
+        res = np.fromiter(map(sum,list(map(full_cover, test_combinations))), dtype=int)
+        index_of_max = np.argmax(res)
+        if (res[index_of_max] >= max_cover_sum): #result found
+            #print("result found")
+            #print(res)
+            #print(index_of_max)
+            index_combination = list(combinations(range(all_data.shape[0]), i))
+            optimal_set_indexes = np.array(index_combination[index_of_max])
+            added_sets = np.zeros(all_data.shape[0], dtype=int)
+            for j in range(optimal_set_indexes.size):
+                added_sets[optimal_set_indexes[j]] = 1
+            return added_sets
+    print("fail")
+    return np.ones(all_data.shape[0], dtype=int)
+	
 		
-# Find minimal set coverage from given array of sets
+# Finds minimal set coverage from given array of sets
 # Returns array of zeros and ones where ones represent indexes of sets which
 # should be included in a set coverage	
 # Uses greedy implementation so the result is NOT optimal
