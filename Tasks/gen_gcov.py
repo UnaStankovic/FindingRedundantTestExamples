@@ -2,7 +2,6 @@
 import os
 from file_work import find_files
 from run import run_gcc, run_tests, find_redundant
-from min_cover import test_algorithms
 
 			
 def main():
@@ -15,8 +14,6 @@ def main():
 	found = find_files(ext, '.')
 	run_gcc(found)
 	test_names = run_tests("test_info.run")
-	#if run_gcc(found) == 1:
-		#merge_gcovs()
 	find_redundant(test_names)
 	
 if __name__ == "__main__":

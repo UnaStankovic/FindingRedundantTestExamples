@@ -113,37 +113,5 @@ def min_set_coverage_greedy(all_data):
             covered_elements = covered_elements + res.astype(np.int)
             added_sets[max_index] = 1
     return added_sets
-		
-		
-def make_test_data():
-	all_data = []
 
-	#data1 = np.array(read_array_from_file("..\Examples\01-pathdata\merged_gcov.1234.pathdata"))
-	#data2 = np.array(read_array_from_file("..\Examples\01-pathdata\merged_gcov.1235.pathdata"))
-	#data3 = np.array(read_array_from_file("..\Examples\01-pathdata\merged_gcov.4321.pathdata"))
-	data1 = np.array(read_array_from_file("../Examples/01-pathdata/merged_gcov.1234.pathdata"))
-	data2 = np.array(read_array_from_file("../Examples/01-pathdata/merged_gcov.1235.pathdata"))
-	data3 = np.array(read_array_from_file("../Examples/01-pathdata/merged_gcov.4321.pathdata"))
-	data4 = np.array(data1)
-	data4[0] = 0
-
-	#1 and 2 are equal
-	#4 is containd in 1
-
-	all_data = np.array([data1, data2, data3, data4])
-	size = all_data[0].size
-	#for i in range(1, all_data.shape[0]):
-	#	assert size == all_data[i].size
-	
-	return all_data
-
-	
-def test_algorithms():
-	all_data = make_test_data()
-	
-	print("Optimal algorithm")
-	print(min_set_coverage_optimal(all_data))
-	print("Greedy algorithm")
-	print(min_set_coverage_greedy(all_data))
-	
 	

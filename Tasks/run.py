@@ -12,14 +12,32 @@ def check_outputs(command, string):
 	except CalledProcessError:
 		print("CalledProcessError")
 		exit()
-
+		
+def run_subprocess(command, string):
+	try:
+		p = Popen(command, shell=False, stdin=PIPE,stdout=PIPE,stderr=PIPE, universal_newlines=True)
+		p.wait()
+		print(string)
+	except CalledProcessError:
+		print("CalledProcessError")
+		exit()
+		
+def run_subprocess_with_input(command, input):
+	try:
+		p = Popen(command, shell=False, stdin=PIPE,stdout=PIPE,stderr=PIPE, universal_newlines=True)	
+		p.stdin.write(input)
+		p.stdin.close()
+		p.wait()
+	except CalledProcessError:
+		print("CalledProcessError")
+		exit()
+		
 def run_gcov():
 	found_files = find_files(".gcda", ".")
 	for f in found_files:
 		command = 'gcov ' + f
-		check_outputs(command,"Successfully generated .c.gcov.")
+		run_subprocess(command,"Successfully generated .c.gcov.")
 	return 1
-	
 	
 def run_test(command, input):
 	p = Popen(command, shell=False, stdin=PIPE,stdout=PIPE,stderr=PIPE, universal_newlines=True)
@@ -38,7 +56,7 @@ def run_tests(test_info_file):
 		delete_by_extension(os.curdir, ".gcda")
 		#delete_by_extension(os.curdir, ".gcno")
 		delete_by_extension(os.curdir, ".gcov")
-		run_test(test_command, test_input)
+		run_subprocess_with_input(test_command, test_input)
 		run_gcov()
 		merge_gcovs(test_name)
 
@@ -49,8 +67,8 @@ def run_tests(test_info_file):
 	return test_names
 
 def run_gcc(found):
-	command = 'gcc -g -Wall -fprofile-arcs -ftest-coverage -O0 -o test ' + ' '.join(found)
-	check_outputs(command,"Successfully compiled with gcc.The test sample will be run now." )
+	command = 'gcc -g -Wall -fprofile-arcs -ftest-coverage -O0 -o test ' + ' '.join(found)	
+	run_subprocess(command,"Successfully compiled with gcc.The test sample will be run now." )
 	
 def find_redundant(test_names):
 	pathdata_files = find_files(".pathdata", ".")
