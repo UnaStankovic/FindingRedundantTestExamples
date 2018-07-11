@@ -30,6 +30,12 @@ V2 (using custom unit testing framework).
 			Redundant tests: 
 			tst_03.test_deljenje2
 			
+                - Input
+			python redundant_tests.py examples/02 
+		- Output
+			Redundant tests: 
+			tst_01.test_3
+			
 	Available examples:
 		- examples/01
 		- examples/02
