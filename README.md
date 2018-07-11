@@ -14,9 +14,21 @@ V1.
    $ c
    $ Examples/01
 
-V2.
-1. Start Makefile (it compiles custom library for the tests that are given)
-2. python redundant_tests.py path_to_test_project 
-Output: list of redundant tests
+V2 (using custom unit testing framework).
+	Requirements:
+		- python (compatible with both python2.7 and python3)
+		- numpy package
 
-python redundant_tests.py examples/01 
+	Setup:
+		- Run ./setup.sh (compiles custom unit testing framework)
+
+	Usage:
+		- Input
+			python redundant_tests.py examples/01 
+		- Output
+			Redundant tests: 
+			tst_03.test_deljenje2
+			
+	Available examples:
+		- examples/01
+		- examples/02
