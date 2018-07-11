@@ -48,6 +48,7 @@ def run_gcc(source_files):
 
 	call(command)
 	
+#iterates over the list of gcda files, merges arrays of the parsed data, and returns that merged array
 def coverage_array_creator(files):
 	coverage_array = []
 	for file in files:
@@ -60,8 +61,10 @@ def coverage_array_creator(files):
 					coverage_array.append(1)
 				elif line[0].startswith('#'):
 					coverage_array.append(0)
+        print(coverage_array)
 	return coverage_array
 
+#returns a list of test cases and libraries used in the test project given as param test_path
 def list_test_project(test_path):
 	with open(test_path, 'r') as f:
 		code = f.read()
@@ -81,6 +84,7 @@ def reduce_function(acc, y):
 		acc['libraries'].append(y['filename'])
 	return acc
 
+#loads all relevant data about test project
 def load_test_project(test_path):
 	data = reduce(
 		reduce_function,

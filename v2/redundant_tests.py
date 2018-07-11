@@ -1,8 +1,11 @@
+import sys
+sys.path.insert(0,'../Tasks')
+
 from helpers import *
 from min_cover import min_set_coverage_optimal
 import numpy as np
 
-test_proj = load_test_project('examples/01')
+test_proj = load_test_project(sys.argv[1])
 coverage_matrix = []
 test_row = []
 
@@ -40,5 +43,5 @@ for file in list_dir('.', '.c.gcov'):
 #remove executable
 os.remove('tst')
 
-print 'Redundant tests: '
-print ', '.join(np.array(test_row)[min_set_coverage_optimal(np.array(coverage_matrix)) == 0])
+print('Redundant tests: ')
+print(', '.join(np.array(test_row)[min_set_coverage_optimal(np.array(coverage_matrix)) == 0]))
