@@ -28,12 +28,12 @@ In the .tex file there are sections which represent out train of thoughts. There
             Redundant tests: 
             tst_03.test_deljenje2
 			
-        - Input
-            python redundant_tests.py examples/02 
+        - Input (general usage)
+            python redundant_tests.py {path to a test project} 
         - Output
-            Redundant tests: 
-            tst_01.test_3
-			
+            Redundant tests:
+            {list of redundant tests}
+            
     Available examples:
         - examples/01
         - examples/02
