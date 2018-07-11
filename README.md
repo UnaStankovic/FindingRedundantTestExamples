@@ -4,12 +4,21 @@ This project is a part of my Master Studies' course of Software Verification. Th
 In the .tex file there are sections which represent out train of thoughts. There we have presented various ideas, experiments done and tools used in a process. The whole text is written in Serbian. 
 
 ## V1.
-1. run python script "Tasks/gen_gcov.py"
-2. produce info about tests (such as extension and path)
-   Example:
-   $ python3 Tasks/gen_gcov.py
-   $ c
-   $ Examples/01
+	
+	Requirements:
+		- python (compatible with python3)
+		- numpy package
+		
+	Usage:
+		- run python script Tasks/gen_gcov.py
+			python3 Tasks/gen_gcov.py
+			c
+			Examples/01
+			
+	Available examples:
+		Examples/01
+        Examples/02
+        Examples/03
 
 ## V2 (using custom unit testing framework).
 
