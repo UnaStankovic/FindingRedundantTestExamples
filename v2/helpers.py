@@ -1,6 +1,6 @@
+from functools import reduce
 from subprocess import check_output, CalledProcessError
-import os
-import re
+import re, os
 
 def list_dir(path, ext):
 	files_found = []
@@ -61,7 +61,7 @@ def coverage_array_creator(files):
 					coverage_array.append(1)
 				elif line[0].startswith('#'):
 					coverage_array.append(0)
-        print(coverage_array)
+
 	return coverage_array
 
 #returns a list of test cases and libraries used in the test project given as param test_path
