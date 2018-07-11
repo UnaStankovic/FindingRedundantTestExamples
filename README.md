@@ -13,28 +13,28 @@ In the .tex file there are sections which represent out train of thoughts. There
 
 # V2 (using custom unit testing framework).
 
-	Requirements:
-		- python (compatible with both python2.7 and python3)
-		- numpy package
+    Requirements:
+        - python (compatible with both python2.7 and python3)
+        - numpy package
 
-	Setup:
-                - cd v2
-		- Run ./setup.sh (compiles custom unit testing framework)
+    Setup:
+        - cd v2
+        - Run ./setup.sh (compiles custom unit testing framework)
 
-	Usage:
-		- Input
-			python redundant_tests.py examples/01 
-		- Output
-			Redundant tests: 
-			tst_03.test_deljenje2
+    Usage:
+        - Input
+        - python redundant_tests.py examples/01 
+            - Output
+                Redundant tests: 
+                tst_03.test_deljenje2
 			
-                - Input
-			python redundant_tests.py examples/02 
-		- Output
-			Redundant tests: 
-			tst_01.test_3
+            - Input
+                python redundant_tests.py examples/02 
+            - Output
+                Redundant tests: 
+                tst_01.test_3
 			
-	Available examples:
-                - examples/01
-                - examples/02
-                - examples/03_false_positives
+    Available examples:
+        - examples/01
+        - examples/02
+        - examples/03_false_positives
