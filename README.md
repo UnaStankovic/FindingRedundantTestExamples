@@ -35,6 +35,6 @@ In the .tex file there are sections which represent out train of thoughts. There
 			tst_01.test_3
 			
 	Available examples:
-		- examples/01
-		- examples/02
+                - examples/01
+                - examples/02
                 - examples/03_false_positives
