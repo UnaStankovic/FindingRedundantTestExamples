@@ -5,18 +5,18 @@ In the .tex file there are sections which represent out train of thoughts. There
 
 ## V1.
 	
-	Requirements:
-		- python (compatible with python3)
-		- numpy package
-		
-	Usage:
-		- run python script Tasks/gen_gcov.py
-			python3 Tasks/gen_gcov.py
-			c
-			Examples/01
+    Requirements:
+        - python (compatible with python3)
+        - numpy package
+
+    Usage:
+        - run python script Tasks/gen_gcov.py
+            python3 Tasks/gen_gcov.py
+            c
+            Examples/01
 			
-	Available examples:
-		Examples/01
+    Available examples:
+        Examples/01
         Examples/02
         Examples/03
 
