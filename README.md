@@ -3,10 +3,7 @@ This project is a part of my Master Studies' course of Software Verification. Th
 
 In the .tex file there are sections which represent out train of thoughts. There we have presented various ideas, experiments done and tools used in a process. The whole text is written in Serbian. 
 
-LIBS:
-- numpy (Python3)
-
-V1.
+# V1.
 1. run python script "Tasks/gen_gcov.py"
 2. produce info about tests (such as extension and path)
    Example:
@@ -14,13 +11,14 @@ V1.
    $ c
    $ Examples/01
 
-V2 (using custom unit testing framework).
+# V2 (using custom unit testing framework).
 
 	Requirements:
 		- python (compatible with both python2.7 and python3)
 		- numpy package
 
 	Setup:
+                - cd v2
 		- Run ./setup.sh (compiles custom unit testing framework)
 
 	Usage:
@@ -39,3 +37,4 @@ V2 (using custom unit testing framework).
 	Available examples:
 		- examples/01
 		- examples/02
+                - examples/03_false_positives
