@@ -65,7 +65,7 @@ U ovom tekstu je ukratko prikazan proces kreiranja metodologije za otkrivanje re
 Redudantni test primeri su oni test primeri koji pokrivaju iste delove koda ili pokrivaju delimično iste delove koda, tj. njihovo pokrivanje se preklapa.\\\\
 Pronalaženje redudantnih test primera predstavlja veoma bitan deo testiranja softvera kojem do danas nije pridodavan veliki značaj. Razlog koji stoji iza toga je što još uvek nije razvijena adekvatna metodologija koja bi programerima i testerima omogućila da bez dodatnog troška (posebno vremenskog) otkriju test primere koji su redudantni, a potom ih i uklone.\\\\
 Značaj otkrivanja redudantnih test primera se posebno ističe u projektima otvorenog koda u kojima svi učesnici u stvaranju istog (a može ih biti i nekoliko stotina) prilikom dodavanja novih delova koda dodaju i nove test primere, bez ikakve provere da li takvi test primeri već postoje i da li se tim test primerima pokrivaju neki delovi koda koji su već pokriveni drugim test primerima. Iz tog razloga broj testova za određeni kod može narasti do nerazumnih granica, što još više otežava rad nad softverom otvorenog koda, kao i otkrivanje grešaka, propusta i slično. \\\\
-U radu će biti iznet detaljan proces razmišljanja, testiranja i kreiranja metodologije za otkrivanje ovakvih test primera, sa posebnim osvrtom na alat llc u okviru LLVM-a. 
+U radu će biti iznet detaljan proces razmišljanja, testiranja i kreiranja metodologije za otkrivanje ovakvih test primera.
 
 \section{Ideje}
 \label{sec:ideas}
@@ -116,25 +116,120 @@ Za ovakvu izmenu kôda se može koristi Clang tačnije njegova biblioteka LibToo
 Dok je provera između dva testa linearna to nije slučaj ukoliko se vrši kompletna provera svih testova. Ukoliko želimo da nađemo najmanji skup testova koji vrši isto pokrivanje kao i ceo skup onda nailazimo na problem minimalnog pokrivanja skupa. Ovo je poznati optimizacioni problem za koji je dokazano da je NP kompletan. Naš problem se jednostavno svodi na problem pokrivanja skupa. Skup koji pokrivamo je celokupni niz flegova. Svaki fleg je jedan element, a svaki test je jedan podskup koji sadrži samo one elemente koji odgovaraju aktiviranim flegovima za taj test. Problem pokrivanja skupa ima i približna rešenja koja se mogu iskoristiti zarad bolje vremenske efikasnosti. \\\\
 
 
-\section{Eksperimenti}
-\label{sec:first}
-U ovoj sekciji će biti izneti osnovni eksperimenti koje smo vršili kako bismo došli do određenih zaključaka.
+\section{Primeri}
+\label{sec:examples}
+U ovoj sekciji će biti predstavljena i prodiskutovana dva kompletna slučaja upotrebe alata, na primeru sa custom unit testing frejmvorkom. Primer koji je opisan u nastavku se nalazi na "v2/examples/03\_false\_positives", i sadrži dve jednostavne funkcije za testiranje parnosti broja. Prva funkcija sadrži samo jedan izraz koji testira parnost, i on ujedno predstavlja i povratnu vrednost funkcije. Druga funkcija ima istu funkcionalnost, ali koristi grananja.
 
-\subsection{Jednostavni primeri}
-\label{sec:simpleexamples}
+\begin{lstlisting}
+//library.c
 
-Najpre, pokušaćemo sa dodavanjem nekoliko jednostavnih primera, koji su, pre svega, jednostavni za analizu, a potom ćemo posmatrati ponašanje primenom različitih test primera, od kojih će neki biti redudantni.
+int paran1(int n) {
+    return n % 2 == 0;
+}
 
-\subsubsection{Maksimum i minimum 4 broja}
-Prvi primer koji posmatramo je otkrivanje maksimuma i minimuma 4 broja. Kod je napisan u programskom jeziku C.
+int paran2(int n) {
+    if(n % 2 == 0)
+        return 1;
+    return 0;
+}
+\end{lstlisting}
 
-\lstinputlisting[language=C]{../Examples/01/1_max4.c}
+Odgovarajući test case-ovi koji sadrže jedinične testove za testiranje funkcionalnosti ovih funkcija:
 
-Sada, kreirajmo neke test primere:
-\begin{verbatim}
-Ulaz: 4 3 2 1  
-Izlaz: 4 1
-\end{verbatim}
+\begin{lstlisting}
+//paran1_test_case.c
+
+TST(test_neparan)
+BEGIN
+	COMPARE(paran1(11) == 0);
+END
+
+TST(test_paran)
+BEGIN
+	COMPARE(paran1(16) == 1);
+END
+
+//paran2_test_case.c
+
+TST(test_neparan)
+BEGIN
+	COMPARE(paran2(11) == 0);
+END
+
+TST(test_paran)
+BEGIN
+	COMPARE(paran2(16) == 1);
+END
+
+\end{lstlisting}
+
+Pokretanjem alata se dobija izlaz koji obaveštava da test paran1\_test\_case.test\_paran predstavlja redudantan test. Ovaj primer je odabran jer predstavlja slučaj u kojem je rezultat lažno-pozitivan. Razlog za to je što oba testa izvršavaju isti skup linija (u ovom slučaju je to jedna linija), i alat jedan od njih klasifikuje kao redudantan. Međutim, sasvim je opravdano da se oba testa nađu među jediničnim testovima, jer je logično da se testiraju oba ishoda (broj je paran/broj nije paran).
+
+U nastavku je prikazan primer "v2/examples/01" koji predstavlja jednostavnu biblioteku sa 4 osnovne operacije:
+
+\begin{lstlisting}
+//library.c
+
+int sabiranje(int a, int b) {
+	return a + b;
+}
+
+int oduzimanje(int a, int b) {
+	return a - b;
+}
+
+int mnozenje(int a, int b) {
+	return a * b;
+}
+
+int deljenje(int a, int b) {
+	if(b != 0)
+		return a / b;
+	return ERR;
+}
+\end{lstlisting}
+
+I odgovarajući testovi:
+
+\begin{lstlisting}
+//tst_01.c
+
+TST(test_sabiranje)
+BEGIN
+	COMPARE(sabiranje(10, 5) == 15);
+END
+
+TST(test_oduzimanje)
+BEGIN
+	COMPARE(oduzimanje(10, -5) == 15);
+END
+
+TST(test_deljenje_nulom)
+BEGIN
+	COMPARE(deljenje(5, 0) == ERR);
+END
+
+//tst_02.c
+
+TST(test_mnozenje)
+BEGIN
+	COMPARE(mnozenje(10, 5) == 50)
+END
+
+//tst_03.c
+
+TST(test_deljenje1)
+BEGIN
+	COMPARE(deljenje(10, 5) == 2);
+END
+
+TST(test_deljenje2)
+BEGIN
+	COMPARE(deljenje(10, 0) == ERR);
+END
+\end{lstlisting}
+
+Pokretanjem alata, dobijamo da je test tst\_03.test\_deljenje2 redudantan. U ovom slučaju je rezultat sasvim opravdan. Vidimo da ovaj, i test tst\_01.test\_deljenje\_nulom testiraju u potpunosti istu funkcionalnost.
 
 \section{Alati}
 \label{sec:tools}
@@ -154,7 +249,44 @@ gcov test.gcda
 \end{verbatim}
 
 Primer dobijenog .gcov fajla.
-\lstinputlisting[language=C]{../Examples/01/1_max4.c.gcov}
+\begin{lstlisting}
+	-:    2:#include <stdio.h>
+	-:    3:
+	1:    4:int main( void )
+	-:    5:{   
+	-:    6:    int a, b, c, d;
+	-:    7:    int largest, smallest;
+	-:    8:
+	1:    9:    printf( "Enter four integers (separate them with spaces): " );
+	1:   10:    scanf( "%d %d %d %d", &a, &b, &c, &d );
+	-:   11:
+	1:   12:    largest = smallest = a;
+	-:   13:
+	1:   14:    if ( largest < b ){
+	1:   15:        largest = b;
+	-:   16:    }
+#####:   17:    else if ( b < smallest ){
+#####:   18:        smallest = b;
+	-:   19:    }
+	1:   20:    if ( largest < c ){
+	1:   21:        largest = c;
+	-:   22:    }
+#####:   23:    else if ( c < smallest ){
+#####:   24:        smallest = c;
+	-:   25:    }
+	1:   26:    if ( largest < d ){
+	1:   27:        largest = d;
+	-:   28:    }
+#####:   29:    else if ( d < smallest ){
+#####:   30:        smallest = d;
+	-:   31:    }
+	-:   32:
+	1:   33:    printf( "\nLargest: %d\n", largest );
+	1:   34:    printf( "Smallest: %d", smallest );
+	-:   35:
+	1:   36:    return 0;
+	-:   37:}
+\end{lstlisting}
 
 Lako se uočava da imamo 1 za svaku granu programa koja je izvršena, ako je program dobro struktuiran. Ako se u neku granu nije ušlo to je označeno nizom znakova taraba. 
 
@@ -162,16 +294,11 @@ Neophodno je izvršiti neku vrstu parsiranja .gcov fajla kako bi izvukli informa
 
 Postoji par detalja koje smo izostavili. Naime gcov samo daje informaciju da li je linija izvršena, ako u jednoj liniji postoji više od jedne naredbe nismo sigurni koja je tačno naredba je izvršena (sve ili samo jedna). Zbog toga je prvo potrebno izvršiti neku vrstu formatiranja izvornog koda. To možemo postići nekim dodatnim alatom kao što je \textbf{clang-formater}.
 
-%TODO Objasniti situaciju ako se greska javi u poslednjoj liniji funkcije tj. u return-u. Naredba će biti izvršena bez obzira da li dolazi do greške ili ne. Međutim ako smatramo da su svi test primeri ispravni i da prolaze možemo ignorisati ovu sitaciju.
-
-
-
-\section{LLVM}
-\label{sec:llvm}
-
-
 \section{Zaključak}
 \label{sec:zakljucak}
+Na osnovu postignutih rezultata, može se primetiti da je ovaj problem izuzetno težak, i da ne postoji jedinstveno i najbolje (u smislu uspešnosti klasifikacije testova kao redudantnih/neredudantnih) automatizovano rešenje. Problem je moguće rešiti delimično, uz moguće greške poput lažno-pozitivnih klasifikovanja testova. Procenat lažno-pozitivnih klasifikovanja se može umanjiti detaljnijom analizom petlji/rekurzije, ali se ne može u potpunosti odstraniti, jer je sam pojam redudantnih testova nedovoljno jasno definisan, i nešto što za nekoga predstavlja redudantnost, za drugu osobu može predstavljati sasvim regularan i opravdan test. Dakle, u samu definiciju je uključena i subjektivnost, zbog čega se zaključuje da se ovakav tip alata ne može usavršiti do te mere da se greške uopšte ne javljaju.
+
+Rezultat dobijen našim alatom (metodologijom) treba uzeti sa dozom opreza, i potrebno je vršiti dodatnu analizu testova kako bi se utvrdilo da li neki od njih predstavlja lažno-pozitivno upozorenje. Lažno-pozitivni rezultati mogu se javiti u slučaju petlji i rekurzivnih poziva funkcija (i ne isključivo samo u tim situacijama), pošto metodologija uzima u obzir da li je neka linija koda izvršena, ali ne i to koliko je puta izvršena. To može predstavljati problem kod testova koji testiraju granične vrednosti. Mogu se izvesti dodatna poboljšanja preciznosti detaljnijom analizom petlji.
 
 \addcontentsline{toc}{section}{Literatura}
 \appendix
