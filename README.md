@@ -3,7 +3,7 @@ This project is a part of my Master Studies' course of Software Verification. Th
 
 In the .tex file there are sections which represent out train of thoughts. There we have presented various ideas, experiments done and tools used in a process. The whole text is written in Serbian. 
 
-# V1.
+## V1.
 1. run python script "Tasks/gen_gcov.py"
 2. produce info about tests (such as extension and path)
    Example:
@@ -11,7 +11,7 @@ In the .tex file there are sections which represent out train of thoughts. There
    $ c
    $ Examples/01
 
-# V2 (using custom unit testing framework).
+## V2 (using custom unit testing framework).
 
     Requirements:
         - python (compatible with both python2.7 and python3)
