@@ -15,7 +15,7 @@ def check_outputs(command, string):
 		
 def run_subprocess(command, string):
 	try:
-		p = Popen(command, shell=False, stdin=PIPE,stdout=PIPE,stderr=PIPE, universal_newlines=True)
+		p = Popen(command, shell=True, stdin=PIPE,stdout=PIPE,stderr=PIPE, universal_newlines=True)
 		p.wait()
 		print(string)
 	except CalledProcessError:
