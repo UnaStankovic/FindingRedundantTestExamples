@@ -1,5 +1,5 @@
 import sys
-sys.path.insert(0,'../with_test_info')
+sys.path.insert(0,'../redundant_test_runs')
 
 from helpers import *
 from min_cover import min_set_coverage_optimal

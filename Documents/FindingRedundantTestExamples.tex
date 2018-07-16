@@ -176,7 +176,7 @@ Za ovakvu izmenu kôda se može koristi Clang tačnije njegova biblioteka LibToo
 
 Dok je provera između dva testa linearna to nije slučaj ukoliko se vrši kompletna provera svih testova. Ukoliko želimo da nađemo najmanji skup testova koji vrši isto pokrivanje kao i ceo skup onda nailazimo na problem minimalnog pokrivanja skupa. Ovo je poznati optimizacioni problem za koji je dokazano da je NP kompletan. Naš problem se jednostavno svodi na problem pokrivanja skupa. Skup koji pokrivamo je celokupni niz flegova. Svaki fleg je jedan element, a svaki test je jedan podskup koji sadrži samo one elemente koji odgovaraju aktiviranim flegovima za taj test. Problem pokrivanja skupa ima i približna rešenja koja se mogu iskoristiti zarad bolje vremenske efikasnosti. 
 
-U okviru projekta su implementirana tri algoritma za pokrivanje skupa: optimalni, pohlepni i algoritam provere redudantnosti koji proverava samo parove testova. Alat koristi samo optimalni, a ostali algoritmi predstavljaju ostatak procesa razvijanja rešenja, i upotrebljavani su privremeno, dok nije implementirana optimalnija verzija. Takođe je razvijen alat "with\_test\_info" \space koji je služio za proveru ispravnosti algoritama. Alat se može koristiti za proveru pokrivenosti kôda ali se program mora pokrenuti u potpunosti. U direktorijumu mora postojati tekstualna datoteka sa nazivom "test\_info.run" \space koja opisuje način pokretanja programa. U datoteci se unose tri linije za svaki test koje redom predstavljaju: naziv testa, komanda kojom se pokreće program (najčešće "./test") i ulaz programa (koji može biti prazna linija).
+U okviru projekta su implementirana tri algoritma za pokrivanje skupa: optimalni, pohlepni i algoritam provere redudantnosti koji proverava samo parove testova. Alat koristi samo optimalni, a ostali algoritmi predstavljaju ostatak procesa razvijanja rešenja, i upotrebljavani su privremeno, dok nije implementirana optimalnija verzija. Takođe je razvijen alat "redundant\_test\_runs" \space koji je služio za proveru ispravnosti algoritama. Alat se može koristiti za proveru pokrivenosti kôda ali se program mora pokrenuti u potpunosti. U direktorijumu mora postojati tekstualna datoteka sa nazivom "test\_info.run" \space koja opisuje način pokretanja programa. U datoteci se unose tri linije za svaki test koje redom predstavljaju: naziv testa, komanda kojom se pokreće program (najčešće "./test") i ulaz programa (koji može biti prazna linija).
 
 \section{Pomoćni alati}
 \label{sec:tools}
@@ -243,7 +243,7 @@ Postoji par detalja koje smo izostavili. Naime, gcov samo daje informaciju da li
 
 \section{Primeri}
 \label{sec:examples}
-U ovoj sekciji će biti predstavljena i prodiskutovana dva kompletna slučaja upotrebe alata, na primeru sa našim jednostavnim frejmvorkom (eng. framework) za jedinično testiranje\footnote{Implementacija je jednostavna, ali neće biti opisana, s obzirom da fokus projekta nije na tome.}. Primer koji je opisan u nastavku se nalazi na "with\_unit\_test\_framework/examples/03\_false\_positives", i sadrži dve jednostavne funkcije za testiranje parnosti broja. Prva funkcija sadrži samo jedan izraz koji testira parnost, i on ujedno predstavlja i povratnu vrednost funkcije. Druga funkcija ima istu funkcionalnost, ali koristi grananja.
+U ovoj sekciji će biti predstavljena i prodiskutovana dva kompletna slučaja upotrebe alata, na primeru sa našim jednostavnim frejmvorkom (eng. framework) za jedinično testiranje\footnote{Implementacija je jednostavna, ali neće biti opisana, s obzirom da fokus projekta nije na tome.}. Primer koji je opisan u nastavku se nalazi na "redundant\_unit\_test\_framework/examples/03\_false\_positives", i sadrži dve jednostavne funkcije za testiranje parnosti broja. Prva funkcija sadrži samo jedan izraz koji testira parnost, i on ujedno predstavlja i povratnu vrednost funkcije. Druga funkcija ima istu funkcionalnost, ali koristi grananja.
 
 \begin{lstlisting}
 //library.c
@@ -290,7 +290,7 @@ END
 
 Pokretanjem alata se dobija izlaz koji obaveštava da test paran1\_test\_case.test\_paran predstavlja redudantan test. Ovaj primer je odabran jer predstavlja slučaj u kojem je rezultat lažno-pozitivan\footnote{Ovo je zapravo diskutabilno, i zavisi od toga da li se prilikom pisanja testova prati samo procenat pokrivenih grana ili ne.}. Razlog za to je što oba testa izvršavaju isti skup linija (u ovom slučaju je to jedna linija), i alat jedan od njih klasifikuje kao redudantan. Međutim, sasvim je opravdano da se oba testa nađu među jediničnim testovima, jer je logično da se testiraju oba ishoda (broj je paran/broj nije paran).
 
-U nastavku je prikazan primer "with\_unit\_test\_framework/examples/01" koji predstavlja jednostavnu biblioteku sa 4 osnovne operacije:
+U nastavku je prikazan primer "redundant\_unit\_test\_framework/examples/01" koji predstavlja jednostavnu biblioteku sa 4 osnovne operacije:
 
 \begin{lstlisting}
 //library.c
