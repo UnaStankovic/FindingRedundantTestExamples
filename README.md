@@ -6,6 +6,7 @@ In the .tex file there are sections which represent out train of thoughts. There
 ## V1.
 	
     Requirements:
+        - clang-format-6.0
         - python (compatible with python3)
         - numpy package
 
@@ -23,6 +24,7 @@ In the .tex file there are sections which represent out train of thoughts. There
 ## V2 (using custom unit testing framework).
 
     Requirements:
+        - clang-format-6.0
         - python (compatible with both python2.7 and python3)
         - numpy package
 
