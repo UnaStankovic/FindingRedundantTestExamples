@@ -241,7 +241,6 @@ Neophodno je izvršiti neku vrstu parsiranja .gcov fajla kako bismo izvukli info
 
 Postoji par detalja koje smo izostavili. Naime, gcov samo daje informaciju da li je linija izvršena, a ako u jednoj liniji postoji više od jedne naredbe, nismo sigurni koja je tačno naredba izvršena (sve ili samo jedna). Zbog toga je prvo potrebno izvršiti neku vrstu formatiranja izvornog kôda. To možemo postići nekim dodatnim alatom kao što je \textbf{clang-formater}.
 
-
 \section{Primeri}
 \label{sec:examples}
 U ovoj sekciji će biti predstavljena i prodiskutovana dva kompletna slučaja upotrebe alata, na primeru sa našim jednostavnim frejmvorkom (eng. framework) za jedinično testiranje\footnote{Implementacija je jednostavna, ali neće biti opisana, s obzirom da fokus projekta nije na tome.}. Primer koji je opisan u nastavku se nalazi na "with\_unit\_test\_framework/examples/03\_false\_positives", i sadrži dve jednostavne funkcije za testiranje parnosti broja. Prva funkcija sadrži samo jedan izraz koji testira parnost, i on ujedno predstavlja i povratnu vrednost funkcije. Druga funkcija ima istu funkcionalnost, ali koristi grananja.
@@ -250,13 +249,13 @@ U ovoj sekciji će biti predstavljena i prodiskutovana dva kompletna slučaja up
 //library.c
 
 int paran1(int n) {
-return n % 2 == 0;
+	return n % 2 == 0;
 }
 
 int paran2(int n) {
-if(n % 2 == 0)
-return 1;
-return 0;
+	if(n % 2 == 0)
+		return 1;
+	return 0;
 }
 \end{lstlisting}
 
@@ -267,24 +266,24 @@ Odgovarajući skupovi testova (eng. test cases) koji sadrže jedinične testove 
 
 TST(test_neparan)
 BEGIN
-COMPARE(paran1(11) == 0);
+	COMPARE(paran1(11) == 0);
 END
 
 TST(test_paran)
 BEGIN
-COMPARE(paran1(16) == 1);
+	COMPARE(paran1(16) == 1);
 END
 
 //paran2_test_case.c
 
 TST(test_neparan)
 BEGIN
-COMPARE(paran2(11) == 0);
+	COMPARE(paran2(11) == 0);
 END
 
 TST(test_paran)
 BEGIN
-COMPARE(paran2(16) == 1);
+	COMPARE(paran2(16) == 1);
 END
 
 \end{lstlisting}
@@ -297,21 +296,21 @@ U nastavku je prikazan primer "with\_unit\_test\_framework/examples/01" koji pre
 //library.c
 
 int sabiranje(int a, int b) {
-return a + b;
+	return a + b;
 }
 
 int oduzimanje(int a, int b) {
-return a - b;
+	return a - b;
 }
 
 int mnozenje(int a, int b) {
-return a * b;
+	return a * b;
 }
 
 int deljenje(int a, int b) {
-if(b != 0)
-return a / b;
-return ERR;
+	if(b != 0)
+		return a / b;
+	return ERR;
 }
 \end{lstlisting}
 
@@ -322,40 +321,41 @@ I odgovarajući testovi:
 
 TST(test_sabiranje)
 BEGIN
-COMPARE(sabiranje(10, 5) == 15);
+	COMPARE(sabiranje(10, 5) == 15);
 END
 
 TST(test_oduzimanje)
 BEGIN
-COMPARE(oduzimanje(10, -5) == 15);
+	COMPARE(oduzimanje(10, -5) == 15);
 END
 
 TST(test_deljenje_nulom)
 BEGIN
-COMPARE(deljenje(5, 0) == ERR);
+	COMPARE(deljenje(5, 0) == ERR);
 END
 
 //tst_02.c
 
 TST(test_mnozenje)
 BEGIN
-COMPARE(mnozenje(10, 5) == 50)
+	COMPARE(mnozenje(10, 5) == 50)
 END
 
 //tst_03.c
 
 TST(test_deljenje1)
 BEGIN
-COMPARE(deljenje(10, 5) == 2);
+	COMPARE(deljenje(10, 5) == 2);
 END
 
 TST(test_deljenje2)
 BEGIN
-COMPARE(deljenje(10, 0) == ERR);
+	COMPARE(deljenje(10, 0) == ERR);
 END
 \end{lstlisting}
 
 Pokretanjem alata, dobijamo da je test tst\_03.test\_deljenje2 redudantan. U ovom slučaju je rezultat sasvim opravdan. Vidimo da ovaj, i test tst\_01.test\_deljenje\_nulom testiraju u potpunosti istu funkcionalnost.
+
 
 \section{Zaključak}
 \label{sec:zakljucak}
