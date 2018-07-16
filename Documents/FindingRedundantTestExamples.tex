@@ -62,19 +62,19 @@ U ovom tekstu je ukratko prikazan proces kreiranja metodologije za otkrivanje re
 
 \section{Uvod}
 \label{sec:introduction}
-Redudantni test primeri su oni test primeri koji pokrivaju iste delove koda ili pokrivaju delimično iste delove koda, tj. njihovo pokrivanje se preklapa.\\\\
-Pronalaženje redudantnih test primera predstavlja veoma bitan deo testiranja softvera kojem do danas nije pridodavan veliki značaj. Razlog koji stoji iza toga je što još uvek nije razvijena adekvatna metodologija koja bi programerima i testerima omogućila da bez dodatnog troška (posebno vremenskog) otkriju test primere koji su redudantni, a potom ih i uklone.\\\\
-Značaj otkrivanja redudantnih test primera se posebno ističe u projektima otvorenog koda u kojima svi učesnici u stvaranju istog (a može ih biti i nekoliko stotina) prilikom dodavanja novih delova koda dodaju i nove test primere, bez ikakve provere da li takvi test primeri već postoje i da li se tim test primerima pokrivaju neki delovi koda koji su već pokriveni drugim test primerima. Iz tog razloga broj testova za određeni kod može narasti do nerazumnih granica, što još više otežava rad nad softverom otvorenog koda, kao i otkrivanje grešaka, propusta i slično. \\\\
+Redudantni test primeri su oni test primeri koji pokrivaju iste, ili delimično iste delove kôda, tj. njihovo pokrivanje se preklapa.\\\\
+Pronalaženje redudantnih test primera predstavlja veoma bitan deo testiranja softvera kojem do danas nije pridavan veliki značaj. Razlog koji stoji iza toga je što još uvek nije razvijena adekvatna metodologija koja bi programerima i testerima omogućila da bez dodatnog troška (posebno vremenskog) otkriju test primere koji su redudantni, a potom ih i uklone.\\\\
+Značaj otkrivanja redudantnih test primera se posebno ističe u projektima otvorenog kôda u kojima svi učesnici u stvaranju istog (a može ih biti i nekoliko stotina) prilikom dodavanja novih delova kôda dodaju i nove test primere, bez ikakve provere da li takvi test primeri već postoje i da li se tim test primerima pokrivaju neki delovi koji su već pokriveni drugim test primerima. Iz tog razloga broj testova za određeni kôd može narasti do nerazumnih granica, što još više otežava rad nad softverom otvorenog kôda, kao i otkrivanje grešaka, propusta i slično. \\\\
 U radu će biti iznet detaljan proces razmišljanja, testiranja i kreiranja metodologije za otkrivanje ovakvih test primera.
 
 \section{Ideje}
 \label{sec:ideas}
-U nastavku će biti predstavljene neke ideje za rešavalje problema pronalaženja redudantnih testova.
+U nastavku će biti predstavljene neke ideje za rešavanje problema pronalaženja redudantnih testova.
 
-\subsection{Poređenje testova pomoću pokrivenosti koda}
+\subsection{Poređenje testova pomoću pokrivenosti kôda}
 \label{sec:idea1}
-Kao što je već pomenuto u sekciji \ref{sec:introduction} redudantni testovi su oni koji pokrivaju iste delove kôda. Prema tome problem se može svesti na prepoznavanje delova kôda koji neki test primer pokriva, a zatim pronaći drugi test koji pokriva isti kôd ili neki njegov nadskup. U tom slučaju će prvi test biti redudantan. \\\\
-Ovo nas navodi na to da nam je potreban neki način praćenja naredbi u kôdu (ili blokova kôda) koji su izvršeni što možemo postići nekom instumentalizacijom kôda. Kao osnovna ideja se javlja izmena izvornog kôda koja će imati u sebi neku vrstu globanog niza flegova (eng. flags) koji se aktiviraju kada je neki kôd dostignut ili neki poseban uslov ispunjen. U svom najjednostavnijem obliku ti flegovi mogu postojati na početku svakog bloka kôoda i na početku svake grane. Time je jednoznačno određena svaka putanja kroz kôd ne uzimajući u obzir višestruka izvršavanja tela petlji koje će biti posebno spomenute kasnije. Ako se ograničimo na to da su vrednosi flegova 0 ili 1, gde 0 predstavlja da kôd nije izvršen, a 1 da jeste, onda se provera da li su izvršene iste putanje svodi na poređenje niza flegova. Ukoliko su isti i testovi su isti. Provera da li je jedan test sadržan u drugom se takođe jednostavno proverava u linearnom vremenu po broju flegova. Dodatna pogodnost ograničavanja vrednosti na samo 0 ili 1 je da se može izvršiti optimizacija korišćenjem bitovskih operatora. Alternativno svaki fleg može biti poseban brojač koji se uvećava svaki put za jedan što umanjuje efikasnost ali doprinosi tome da se razlikuju testovi koji imaju različit broj iteracija kroz istu petlju.
+Kao što je već pomenuto u sekciji \ref{sec:introduction}, redudantni testovi su oni koji pokrivaju iste delove kôda. Prema tome problem se može svesti na prepoznavanje delova kôda koji neki test primer pokriva, a zatim pronaći drugi test koji pokriva isti kôd ili neki njegov nadskup. U tom slučaju će prvi test biti redudantan. \\\\
+Ovo nas navodi na to da nam je potreban neki način praćenja naredbi u kôdu (ili blokova kôda) koji su izvršeni što možemo postići nekom instumentalizacijom kôda. Kao osnovna ideja se javlja izmena izvornog kôda koja će imati u sebi neku vrstu globanog niza flegova (eng. flags) koji se aktiviraju kada je neki kôd dostignut ili neki poseban uslov ispunjen. U svom najjednostavnijem obliku ti flegovi mogu postojati na početku svakog bloka kôda i na početku svake grane. Time je jednoznačno određena svaka putanja kroz kôd ne uzimajući u obzir višestruka izvršavanja tela petlji koje će biti posebno spomenute kasnije. Ako se ograničimo na to da su vrednosi flegova 0 ili 1, gde 0 predstavlja da kôd nije izvršen, a 1 da jeste, onda se provera da li su izvršene iste putanje svodi na poređenje niza flegova. Ukoliko su isti i testovi su isti. Provera da li je jedan test sadržan u drugom se takođe jednostavno proverava u linearnom vremenu po broju flegova. Dodatna pogodnost ograničavanja vrednosti na samo 0 ili 1 je da se može izvršiti optimizacija korišćenjem bitovskih operatora. Alternativno svaki fleg može biti poseban brojač koji se uvećava svaki put za jedan što umanjuje efikasnost, ali doprinosi tome da se razlikuju testovi koji imaju različit broj iteracija kroz istu petlju.
 \begin{lstlisting}
 int abs(int x)
 {
@@ -112,13 +112,14 @@ int abs(int x)
 }
 \end{lstlisting}
 
-Za ovakvu izmenu kôda se može koristi Clang tačnije njegova biblioteka LibTooling uz pomoću koje je moguće obići AST stablo i izvršiti ,,source to source'' izmene. Drugi način bi bio korišćenje nekog drugog alata koji prati izvršene naredbe kao što je gcov koji dolazi sa GCC prevodiocem. Ovaj pristup se može pokazati manje efikasnim zbog velikog broja redudantnih informacija koje nudi. Ukoliko se radi pod pretpostavkom su svi testovi ispravni gcov će nuditi po jedan broj za svaku liniju kôda gde može biti dovoljan samo jedan po bloku. Provera da li je jedan test redudantan u odnosu na drugi će i dalje biti linearna ali ovoga puta po broju linija koda, a ne po broju osnovnih blokova\footnote{osnovni blok je niz instrukcija u kome će se sve instrukcije izvršiti od početka do kraja, nema labela (može samo prva), nema skoka i slično} \\\\
+Za ovakvu izmenu kôda se može koristi Clang tačnije njegova biblioteka LibTooling uz pomoću koje je moguće obići AST stablo i izvršiti ,,source to source'' izmene. Drugi način bi bio korišćenje nekog drugog alata koji prati izvršene naredbe kao što je gcov, koji dolazi sa GCC prevodiocem. Ovaj pristup se može pokazati manje efikasnim zbog velikog broja redudantnih informacija koje nudi. Ukoliko se radi pod pretpostavkom da su svi testovi ispravni, gcov će nuditi po jedan broj za svaku liniju kôda, gde može biti dovoljan samo jedan po bloku. Provera da li je jedan test redudantan u odnosu na drugi će i dalje biti linearna ali ovoga puta po broju linija koda, a ne po broju osnovnih blokova\footnote{Osnovni blok je niz instrukcija u kome će se sve instrukcije izvršiti od početka do kraja, nema labela (može samo prva), nema skoka i slično.} \\\\
 Dok je provera između dva testa linearna to nije slučaj ukoliko se vrši kompletna provera svih testova. Ukoliko želimo da nađemo najmanji skup testova koji vrši isto pokrivanje kao i ceo skup onda nailazimo na problem minimalnog pokrivanja skupa. Ovo je poznati optimizacioni problem za koji je dokazano da je NP kompletan. Naš problem se jednostavno svodi na problem pokrivanja skupa. Skup koji pokrivamo je celokupni niz flegova. Svaki fleg je jedan element, a svaki test je jedan podskup koji sadrži samo one elemente koji odgovaraju aktiviranim flegovima za taj test. Problem pokrivanja skupa ima i približna rešenja koja se mogu iskoristiti zarad bolje vremenske efikasnosti. \\\\
 
+U okviru projekta su implementirana dva algoritma za pokrivanje skupa: optimalni i naivni. Alat koristi samo optimalni, a naivni algoritam predstavlja ostatak procesa razvijanja rešenja, i upotrebljavan je privremeno, dok nije implementirana optimalnija verzija.
 
 \section{Primeri}
 \label{sec:examples}
-U ovoj sekciji će biti predstavljena i prodiskutovana dva kompletna slučaja upotrebe alata, na primeru sa custom unit testing frejmvorkom. Primer koji je opisan u nastavku se nalazi na "v2/examples/03\_false\_positives", i sadrži dve jednostavne funkcije za testiranje parnosti broja. Prva funkcija sadrži samo jedan izraz koji testira parnost, i on ujedno predstavlja i povratnu vrednost funkcije. Druga funkcija ima istu funkcionalnost, ali koristi grananja.
+U ovoj sekciji će biti predstavljena i prodiskutovana dva kompletna slučaja upotrebe alata, na primeru sa našim jednostavnim frejmvorkom (eng. framework) za jedinično testiranje\footnote{Implementacija je jednostavna, ali neće biti opisana, s obzirom da fokus projekta nije na tome.}. Primer koji je opisan u nastavku se nalazi na "v2/examples/03\_false\_positives", i sadrži dve jednostavne funkcije za testiranje parnosti broja. Prva funkcija sadrži samo jedan izraz koji testira parnost, i on ujedno predstavlja i povratnu vrednost funkcije. Druga funkcija ima istu funkcionalnost, ali koristi grananja.
 
 \begin{lstlisting}
 //library.c
@@ -134,7 +135,7 @@ int paran2(int n) {
 }
 \end{lstlisting}
 
-Odgovarajući test case-ovi koji sadrže jedinične testove za testiranje funkcionalnosti ovih funkcija:
+Odgovarajući skupovi testova (eng. test cases) koji sadrže jedinične testove za testiranje funkcionalnosti ovih funkcija:
 
 \begin{lstlisting}
 //paran1_test_case.c
@@ -163,7 +164,7 @@ END
 
 \end{lstlisting}
 
-Pokretanjem alata se dobija izlaz koji obaveštava da test paran1\_test\_case.test\_paran predstavlja redudantan test. Ovaj primer je odabran jer predstavlja slučaj u kojem je rezultat lažno-pozitivan. Razlog za to je što oba testa izvršavaju isti skup linija (u ovom slučaju je to jedna linija), i alat jedan od njih klasifikuje kao redudantan. Međutim, sasvim je opravdano da se oba testa nađu među jediničnim testovima, jer je logično da se testiraju oba ishoda (broj je paran/broj nije paran).
+Pokretanjem alata se dobija izlaz koji obaveštava da test paran1\_test\_case.test\_paran predstavlja redudantan test. Ovaj primer je odabran jer predstavlja slučaj u kojem je rezultat lažno-pozitivan\footnote{Ovo je zapravo diskutabilno, i zavisi od toga da li se prilikom pisanja testova prati samo procenat pokrivenih grana ili ne.}. Razlog za to je što oba testa izvršavaju isti skup linija (u ovom slučaju je to jedna linija), i alat jedan od njih klasifikuje kao redudantan. Međutim, sasvim je opravdano da se oba testa nađu među jediničnim testovima, jer je logično da se testiraju oba ishoda (broj je paran/broj nije paran).
 
 U nastavku je prikazan primer "v2/examples/01" koji predstavlja jednostavnu biblioteku sa 4 osnovne operacije:
 
@@ -236,7 +237,7 @@ Pokretanjem alata, dobijamo da je test tst\_03.test\_deljenje2 redudantan. U ovo
 
 U ovoj sekciji će biti predstavljeni alati korišćeni za analizu.
 
-Kako bi dobili informacija o izvršenim linijama u izvornom kodu prilikom pokretanja pograma koristimo alata gcov. Prvo je potrebno prevesti odgovarajući .c fajl sa narednim opcijama
+Kako bismo dobili informaciju o izvršenim linijama u izvornom kôdu prilikom pokretanja programa, koristimo alat gcov. Prvo je potrebno prevesti odgovarajući .c fajl sa narednim opcijama:
 
 \begin{verbatim}
 gcc -g -Wall -fprofile-arcs -ftest-coverage -O0 test.c -o test
@@ -288,21 +289,16 @@ Primer dobijenog .gcov fajla.
 	-:   37:}
 \end{lstlisting}
 
-Lako se uočava da imamo 1 za svaku granu programa koja je izvršena, ako je program dobro struktuiran. Ako se u neku granu nije ušlo to je označeno nizom znakova taraba. 
+Lako se uočava da imamo '1' za svaku granu programa koja je izvršena, ako je program dobro struktuiran. Ako se u neku granu nije ušlo to je označeno nizom znakova '\#'.
 
-Neophodno je izvršiti neku vrstu parsiranja .gcov fajla kako bi izvukli informacije o izvršenim linijama. Ono što želimo da dobijemo je niz celobrojnih vrednosti koji dalje možemo da poredimo sa drugim izvršavanjima istog fajla. Ako bismo za dva test primera imali iste nizove karaktera u fajlu, odnosno isti skup izvršenih grana za njih onda smatramo da pokrivaju iste grane. 
+Neophodno je izvršiti neku vrstu parsiranja .gcov fajla kako bismo izvukli informacije o izvršenim linijama. Ono što želimo da dobijemo je niz celobrojnih vrednosti koji dalje možemo da poredimo sa drugim izvršavanjima istog fajla. Ako bismo za dva test primera imali iste nizove karaktera u fajlu, odnosno isti skup izvršenih grana za njih, onda smatramo da pokrivaju iste grane. 
 
-Postoji par detalja koje smo izostavili. Naime gcov samo daje informaciju da li je linija izvršena, ako u jednoj liniji postoji više od jedne naredbe nismo sigurni koja je tačno naredba je izvršena (sve ili samo jedna). Zbog toga je prvo potrebno izvršiti neku vrstu formatiranja izvornog koda. To možemo postići nekim dodatnim alatom kao što je \textbf{clang-formater}.
+Postoji par detalja koje smo izostavili. Naime, gcov samo daje informaciju da li je linija izvršena, a ako u jednoj liniji postoji više od jedne naredbe, nismo sigurni koja je tačno naredba izvršena (sve ili samo jedna). Zbog toga je prvo potrebno izvršiti neku vrstu formatiranja izvornog kôda. To možemo postići nekim dodatnim alatom kao što je \textbf{clang-formater}.
 
 \section{Zaključak}
 \label{sec:zakljucak}
 Na osnovu postignutih rezultata, može se primetiti da je ovaj problem izuzetno težak, i da ne postoji jedinstveno i najbolje (u smislu uspešnosti klasifikacije testova kao redudantnih/neredudantnih) automatizovano rešenje. Problem je moguće rešiti delimično, uz moguće greške poput lažno-pozitivnih klasifikovanja testova. Procenat lažno-pozitivnih klasifikovanja se može umanjiti detaljnijom analizom petlji/rekurzije, ali se ne može u potpunosti odstraniti, jer je sam pojam redudantnih testova nedovoljno jasno definisan, i nešto što za nekoga predstavlja redudantnost, za drugu osobu može predstavljati sasvim regularan i opravdan test. Dakle, u samu definiciju je uključena i subjektivnost, zbog čega se zaključuje da se ovakav tip alata ne može usavršiti do te mere da se greške uopšte ne javljaju.
 
 Rezultat dobijen našim alatom (metodologijom) treba uzeti sa dozom opreza, i potrebno je vršiti dodatnu analizu testova kako bi se utvrdilo da li neki od njih predstavlja lažno-pozitivno upozorenje. Lažno-pozitivni rezultati mogu se javiti u slučaju petlji i rekurzivnih poziva funkcija (i ne isključivo samo u tim situacijama), pošto metodologija uzima u obzir da li je neka linija koda izvršena, ali ne i to koliko je puta izvršena. To može predstavljati problem kod testova koji testiraju granične vrednosti. Mogu se izvesti dodatna poboljšanja preciznosti detaljnijom analizom petlji.
-
-\addcontentsline{toc}{section}{Literatura}
-\appendix
-\bibliography{seminarski} 
-\bibliographystyle{plain}
 
 \end{document}
