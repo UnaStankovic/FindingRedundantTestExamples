@@ -3,7 +3,7 @@ This project is a part of Master Studies' course of Software Verification. The m
 
 In the .tex file there are sections which represent out train of thoughts. There we have presented various ideas, experiments done and tools used in a process. The whole text is written in Serbian. 
 
-## V1.
+## using test_info.run.
 	
     Requirements:
         - clang-format-6.0
@@ -11,8 +11,8 @@ In the .tex file there are sections which represent out train of thoughts. There
         - numpy package
 
     Usage:
-        - run python script Tasks/gen_gcov.py
-            python3 Tasks/gen_gcov.py
+        - run python script with_test_info/gen_gcov.py
+            python3 with_test_info/gen_gcov.py
             c
             Examples/01
 			
@@ -21,7 +21,7 @@ In the .tex file there are sections which represent out train of thoughts. There
         Examples/02
         Examples/03
 
-## V2 (using custom unit testing framework).
+## using custom unit testing framework.
 
     Requirements:
         - clang-format-6.0
@@ -29,7 +29,7 @@ In the .tex file there are sections which represent out train of thoughts. There
         - numpy package
 
     Setup:
-        - cd v2
+        - cd with_unit_test_framework
         - Run ./setup.sh (compiles custom unit testing framework)
 
     Usage:

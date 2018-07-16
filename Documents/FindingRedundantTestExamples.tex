@@ -119,7 +119,7 @@ U okviru projekta su implementirana dva algoritma za pokrivanje skupa: optimalni
 
 \section{Primeri}
 \label{sec:examples}
-U ovoj sekciji će biti predstavljena i prodiskutovana dva kompletna slučaja upotrebe alata, na primeru sa našim jednostavnim frejmvorkom (eng. framework) za jedinično testiranje\footnote{Implementacija je jednostavna, ali neće biti opisana, s obzirom da fokus projekta nije na tome.}. Primer koji je opisan u nastavku se nalazi na "v2/examples/03\_false\_positives", i sadrži dve jednostavne funkcije za testiranje parnosti broja. Prva funkcija sadrži samo jedan izraz koji testira parnost, i on ujedno predstavlja i povratnu vrednost funkcije. Druga funkcija ima istu funkcionalnost, ali koristi grananja.
+U ovoj sekciji će biti predstavljena i prodiskutovana dva kompletna slučaja upotrebe alata, na primeru sa našim jednostavnim frejmvorkom (eng. framework) za jedinično testiranje\footnote{Implementacija je jednostavna, ali neće biti opisana, s obzirom da fokus projekta nije na tome.}. Primer koji je opisan u nastavku se nalazi na "with\_unit\_test\_framework/examples/03\_false\_positives", i sadrži dve jednostavne funkcije za testiranje parnosti broja. Prva funkcija sadrži samo jedan izraz koji testira parnost, i on ujedno predstavlja i povratnu vrednost funkcije. Druga funkcija ima istu funkcionalnost, ali koristi grananja.
 
 \begin{lstlisting}
 //library.c
@@ -166,7 +166,7 @@ END
 
 Pokretanjem alata se dobija izlaz koji obaveštava da test paran1\_test\_case.test\_paran predstavlja redudantan test. Ovaj primer je odabran jer predstavlja slučaj u kojem je rezultat lažno-pozitivan\footnote{Ovo je zapravo diskutabilno, i zavisi od toga da li se prilikom pisanja testova prati samo procenat pokrivenih grana ili ne.}. Razlog za to je što oba testa izvršavaju isti skup linija (u ovom slučaju je to jedna linija), i alat jedan od njih klasifikuje kao redudantan. Međutim, sasvim je opravdano da se oba testa nađu među jediničnim testovima, jer je logično da se testiraju oba ishoda (broj je paran/broj nije paran).
 
-U nastavku je prikazan primer "v2/examples/01" koji predstavlja jednostavnu biblioteku sa 4 osnovne operacije:
+U nastavku je prikazan primer "with\_unit\_test\_framework/examples/01" koji predstavlja jednostavnu biblioteku sa 4 osnovne operacije:
 
 \begin{lstlisting}
 //library.c

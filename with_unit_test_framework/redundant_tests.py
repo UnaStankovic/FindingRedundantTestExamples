@@ -1,5 +1,5 @@
 import sys
-sys.path.insert(0,'../Tasks')
+sys.path.insert(0,'../with_test_info')
 
 from helpers import *
 from min_cover import min_set_coverage_optimal
