@@ -49,3 +49,5 @@ In the .tex file there are sections which represent out train of thoughts. There
         - examples/01
         - examples/02
         - examples/03_false_positives
+        - examples/04
+        - examples/05_loop
