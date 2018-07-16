@@ -11,9 +11,9 @@ In the .tex file there are sections which represent out train of thoughts. There
         - numpy package
 
     Usage:
-        - run python script with_test_info/redundant_tests.py
+        - run python script redundant_test_runs/redundant_tests.py
 		- run example:
-            cd with_test_info
+            cd redundant_test_runs
             python3 redundant_tests.py
             c
             examples/01
@@ -32,7 +32,7 @@ In the .tex file there are sections which represent out train of thoughts. There
         - numpy package
 
     Setup:
-        - cd with_unit_test_framework
+        - cd redundant_unit_test_framework
         - Run ./setup.sh (compiles custom unit testing framework)
 
     Usage:
