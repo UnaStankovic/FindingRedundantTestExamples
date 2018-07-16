@@ -9,6 +9,9 @@ test_proj = load_test_project(sys.argv[1])
 coverage_matrix = []
 test_row = []
 
+#preprocess source files using clang-format
+call('clang-format-6.0 -i -style=Chromium ' + ' '.join(test_proj['libraries']))
+
 for test_case in test_proj['test_cases']:
 	run_gcc(test_proj['libraries'] + [test_case['filename']])
 
