@@ -178,125 +178,10 @@ Dok je provera između dva testa linearna to nije slučaj ukoliko se vrši kompl
 
 U okviru projekta su implementirana tri algoritma za pokrivanje skupa: optimalni, pohlepni i algoritam provere redudantnosti koji proverava samo parove testova. Alat koristi samo optimalni, a ostali algoritmi predstavljaju ostatak procesa razvijanja rešenja, i upotrebljavani su privremeno, dok nije implementirana optimalnija verzija. Takođe je razvijen alat "with\_test\_info" \space koji je služio za proveru ispravnosti algoritama. Alat se može koristiti za proveru pokrivenosti kôda ali se program mora pokrenuti u potpunosti. U direktorijumu mora postojati tekstualna datoteka sa nazivom "test\_info.run" \space koja opisuje način pokretanja programa. U datoteci se unose tri linije za svaki test koje redom predstavljaju: naziv testa, komanda kojom se pokreće program (najčešće "./test") i ulaz programa (koji može biti prazna linija).
 
-\section{Primeri}
-\label{sec:examples}
-U ovoj sekciji će biti predstavljena i prodiskutovana dva kompletna slučaja upotrebe alata, na primeru sa našim jednostavnim frejmvorkom (eng. framework) za jedinično testiranje\footnote{Implementacija je jednostavna, ali neće biti opisana, s obzirom da fokus projekta nije na tome.}. Primer koji je opisan u nastavku se nalazi na "with\_unit\_test\_framework/examples/03\_false\_positives", i sadrži dve jednostavne funkcije za testiranje parnosti broja. Prva funkcija sadrži samo jedan izraz koji testira parnost, i on ujedno predstavlja i povratnu vrednost funkcije. Druga funkcija ima istu funkcionalnost, ali koristi grananja.
-
-\begin{lstlisting}
-//library.c
-
-int paran1(int n) {
-    return n % 2 == 0;
-}
-
-int paran2(int n) {
-    if(n % 2 == 0)
-        return 1;
-    return 0;
-}
-\end{lstlisting}
-
-Odgovarajući skupovi testova (eng. test cases) koji sadrže jedinične testove za testiranje funkcionalnosti ovih funkcija:
-
-\begin{lstlisting}
-//paran1_test_case.c
-
-TST(test_neparan)
-BEGIN
-	COMPARE(paran1(11) == 0);
-END
-
-TST(test_paran)
-BEGIN
-	COMPARE(paran1(16) == 1);
-END
-
-//paran2_test_case.c
-
-TST(test_neparan)
-BEGIN
-	COMPARE(paran2(11) == 0);
-END
-
-TST(test_paran)
-BEGIN
-	COMPARE(paran2(16) == 1);
-END
-
-\end{lstlisting}
-
-Pokretanjem alata se dobija izlaz koji obaveštava da test paran1\_test\_case.test\_paran predstavlja redudantan test. Ovaj primer je odabran jer predstavlja slučaj u kojem je rezultat lažno-pozitivan\footnote{Ovo je zapravo diskutabilno, i zavisi od toga da li se prilikom pisanja testova prati samo procenat pokrivenih grana ili ne.}. Razlog za to je što oba testa izvršavaju isti skup linija (u ovom slučaju je to jedna linija), i alat jedan od njih klasifikuje kao redudantan. Međutim, sasvim je opravdano da se oba testa nađu među jediničnim testovima, jer je logično da se testiraju oba ishoda (broj je paran/broj nije paran).
-
-U nastavku je prikazan primer "with\_unit\_test\_framework/examples/01" koji predstavlja jednostavnu biblioteku sa 4 osnovne operacije:
-
-\begin{lstlisting}
-//library.c
-
-int sabiranje(int a, int b) {
-	return a + b;
-}
-
-int oduzimanje(int a, int b) {
-	return a - b;
-}
-
-int mnozenje(int a, int b) {
-	return a * b;
-}
-
-int deljenje(int a, int b) {
-	if(b != 0)
-		return a / b;
-	return ERR;
-}
-\end{lstlisting}
-
-I odgovarajući testovi:
-
-\begin{lstlisting}
-//tst_01.c
-
-TST(test_sabiranje)
-BEGIN
-	COMPARE(sabiranje(10, 5) == 15);
-END
-
-TST(test_oduzimanje)
-BEGIN
-	COMPARE(oduzimanje(10, -5) == 15);
-END
-
-TST(test_deljenje_nulom)
-BEGIN
-	COMPARE(deljenje(5, 0) == ERR);
-END
-
-//tst_02.c
-
-TST(test_mnozenje)
-BEGIN
-	COMPARE(mnozenje(10, 5) == 50)
-END
-
-//tst_03.c
-
-TST(test_deljenje1)
-BEGIN
-	COMPARE(deljenje(10, 5) == 2);
-END
-
-TST(test_deljenje2)
-BEGIN
-	COMPARE(deljenje(10, 0) == ERR);
-END
-\end{lstlisting}
-
-Pokretanjem alata, dobijamo da je test tst\_03.test\_deljenje2 redudantan. U ovom slučaju je rezultat sasvim opravdan. Vidimo da ovaj, i test tst\_01.test\_deljenje\_nulom testiraju u potpunosti istu funkcionalnost.
-
-\section{Alati}
+\section{Pomoćni alati}
 \label{sec:tools}
 
-U ovoj sekciji će biti predstavljeni alati korišćeni za analizu.
+U ovoj sekciji će biti predstavljeni pomoćni alati korišćeni za analizu i razvoj naših alata.
 
 Kako bismo dobili informaciju o izvršenim linijama u izvornom kôdu prilikom pokretanja programa, koristimo alat gcov. Prvo je potrebno prevesti odgovarajući .c fajl sa narednim opcijama:
 
@@ -355,6 +240,122 @@ Lako se uočava da imamo '1' za svaku granu programa koja je izvršena, ako je p
 Neophodno je izvršiti neku vrstu parsiranja .gcov fajla kako bismo izvukli informacije o izvršenim linijama. Ono što želimo da dobijemo je niz celobrojnih vrednosti koji dalje možemo da poredimo sa drugim izvršavanjima istog fajla. Ako bismo za dva test primera imali iste nizove karaktera u fajlu, odnosno isti skup izvršenih grana za njih, onda smatramo da pokrivaju iste grane. 
 
 Postoji par detalja koje smo izostavili. Naime, gcov samo daje informaciju da li je linija izvršena, a ako u jednoj liniji postoji više od jedne naredbe, nismo sigurni koja je tačno naredba izvršena (sve ili samo jedna). Zbog toga je prvo potrebno izvršiti neku vrstu formatiranja izvornog kôda. To možemo postići nekim dodatnim alatom kao što je \textbf{clang-formater}.
+
+
+\section{Primeri}
+\label{sec:examples}
+U ovoj sekciji će biti predstavljena i prodiskutovana dva kompletna slučaja upotrebe alata, na primeru sa našim jednostavnim frejmvorkom (eng. framework) za jedinično testiranje\footnote{Implementacija je jednostavna, ali neće biti opisana, s obzirom da fokus projekta nije na tome.}. Primer koji je opisan u nastavku se nalazi na "with\_unit\_test\_framework/examples/03\_false\_positives", i sadrži dve jednostavne funkcije za testiranje parnosti broja. Prva funkcija sadrži samo jedan izraz koji testira parnost, i on ujedno predstavlja i povratnu vrednost funkcije. Druga funkcija ima istu funkcionalnost, ali koristi grananja.
+
+\begin{lstlisting}
+//library.c
+
+int paran1(int n) {
+return n % 2 == 0;
+}
+
+int paran2(int n) {
+if(n % 2 == 0)
+return 1;
+return 0;
+}
+\end{lstlisting}
+
+Odgovarajući skupovi testova (eng. test cases) koji sadrže jedinične testove za testiranje funkcionalnosti ovih funkcija:
+
+\begin{lstlisting}
+//paran1_test_case.c
+
+TST(test_neparan)
+BEGIN
+COMPARE(paran1(11) == 0);
+END
+
+TST(test_paran)
+BEGIN
+COMPARE(paran1(16) == 1);
+END
+
+//paran2_test_case.c
+
+TST(test_neparan)
+BEGIN
+COMPARE(paran2(11) == 0);
+END
+
+TST(test_paran)
+BEGIN
+COMPARE(paran2(16) == 1);
+END
+
+\end{lstlisting}
+
+Pokretanjem alata se dobija izlaz koji obaveštava da test paran1\_test\_case.test\_paran predstavlja redudantan test. Ovaj primer je odabran jer predstavlja slučaj u kojem je rezultat lažno-pozitivan\footnote{Ovo je zapravo diskutabilno, i zavisi od toga da li se prilikom pisanja testova prati samo procenat pokrivenih grana ili ne.}. Razlog za to je što oba testa izvršavaju isti skup linija (u ovom slučaju je to jedna linija), i alat jedan od njih klasifikuje kao redudantan. Međutim, sasvim je opravdano da se oba testa nađu među jediničnim testovima, jer je logično da se testiraju oba ishoda (broj je paran/broj nije paran).
+
+U nastavku je prikazan primer "with\_unit\_test\_framework/examples/01" koji predstavlja jednostavnu biblioteku sa 4 osnovne operacije:
+
+\begin{lstlisting}
+//library.c
+
+int sabiranje(int a, int b) {
+return a + b;
+}
+
+int oduzimanje(int a, int b) {
+return a - b;
+}
+
+int mnozenje(int a, int b) {
+return a * b;
+}
+
+int deljenje(int a, int b) {
+if(b != 0)
+return a / b;
+return ERR;
+}
+\end{lstlisting}
+
+I odgovarajući testovi:
+
+\begin{lstlisting}
+//tst_01.c
+
+TST(test_sabiranje)
+BEGIN
+COMPARE(sabiranje(10, 5) == 15);
+END
+
+TST(test_oduzimanje)
+BEGIN
+COMPARE(oduzimanje(10, -5) == 15);
+END
+
+TST(test_deljenje_nulom)
+BEGIN
+COMPARE(deljenje(5, 0) == ERR);
+END
+
+//tst_02.c
+
+TST(test_mnozenje)
+BEGIN
+COMPARE(mnozenje(10, 5) == 50)
+END
+
+//tst_03.c
+
+TST(test_deljenje1)
+BEGIN
+COMPARE(deljenje(10, 5) == 2);
+END
+
+TST(test_deljenje2)
+BEGIN
+COMPARE(deljenje(10, 0) == ERR);
+END
+\end{lstlisting}
+
+Pokretanjem alata, dobijamo da je test tst\_03.test\_deljenje2 redudantan. U ovom slučaju je rezultat sasvim opravdan. Vidimo da ovaj, i test tst\_01.test\_deljenje\_nulom testiraju u potpunosti istu funkcionalnost.
 
 \section{Zaključak}
 \label{sec:zakljucak}
