@@ -301,4 +301,8 @@ Na osnovu postignutih rezultata, može se primetiti da je ovaj problem izuzetno 
 
 Rezultat dobijen našim alatom (metodologijom) treba uzeti sa dozom opreza, i potrebno je vršiti dodatnu analizu testova kako bi se utvrdilo da li neki od njih predstavlja lažno-pozitivno upozorenje. Lažno-pozitivni rezultati mogu se javiti u slučaju petlji i rekurzivnih poziva funkcija (i ne isključivo samo u tim situacijama), pošto metodologija uzima u obzir da li je neka linija koda izvršena, ali ne i to koliko je puta izvršena. To može predstavljati problem kod testova koji testiraju granične vrednosti. Mogu se izvesti dodatna poboljšanja preciznosti detaljnijom analizom petlji.
 
+\section{Moguća unapređenja}
+\label{sec:unapredjenja}
+Neki od mogućih načina za poboljšanje preciznosti i kvaliteta samog alata (i metodologije) su detaljnija analiza petlji i poziva funkcija, kao i detektovanje koji to testovi pokrivaju testove koji su proglašeni redudantnim. Takođe, istraživanjem novih tehnika za rešavanje problema redudantnosti testova se potencijalno može dobiti mnogo precizniji i efikasniji alat (npr. tehnike koje ne podrazumevaju pokretanje testova).
+
 \end{document}
