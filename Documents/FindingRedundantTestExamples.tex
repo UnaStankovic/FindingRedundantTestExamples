@@ -62,7 +62,7 @@ U ovom tekstu je ukratko prikazan proces kreiranja metodologije za otkrivanje re
 
 \section{Uvod}
 \label{sec:introduction}
-Redudantni test primeri su oni test primeri koji pokrivaju iste, ili delimično iste delove kôda, tj. njihovo pokrivanje se preklapa.
+%Redudantni test primeri su oni test primeri koji pokrivaju iste, ili delimično iste delove kôda, tj. njihovo pokrivanje se preklapa.
 
 Pronalaženje redudantnih test primera predstavlja veoma bitan deo testiranja softvera kojem do danas nije pridavan veliki značaj. Razlog koji stoji iza toga je što još uvek nije razvijena adekvatna metodologija koja bi programerima i testerima omogućila da bez dodatnog troška (posebno vremenskog) otkriju test primere koji su redudantni, a potom ih i uklone.
 
@@ -70,13 +70,63 @@ Značaj otkrivanja redudantnih test primera se posebno ističe u projektima otvo
 
 U radu će biti iznet detaljan proces razmišljanja, testiranja i kreiranja metodologije za otkrivanje ovakvih test primera.
 
-\section{Ideje}
-\label{sec:ideas}
-U nastavku će biti predstavljene neke ideje za rešavanje problema pronalaženja redudantnih testova.
+\section{Definicija redudantnog testa}
+\label{sec:definition}
+Da bismo mogli vršiti pronalaženje redudantnih testova u projektu prvo moramo odlučiti šta tačno čini neki test redudantnim. Nije lako odrediti kriterijume sličnosti neka dva testa pogotovo što oni nekada mogu biti i subjektivni. Neka opšta definicija bi mogla da glasi: test je redudantan u odnosu na drugi ako ispituje potpuno istu funkcionalnost programa i daje isti rezultat. Sada je potrebno precizirati šta podrazumevamo pod istom funkcinalnošću i istim rezultatom.
 
-\subsection{Poređenje testova pomoću pokrivenosti kôda}
-\label{sec:idea1}
-Kao što je već pomenuto u sekciji \ref{sec:introduction}, redudantni testovi su oni koji pokrivaju iste delove kôda. Prema tome problem se može svesti na prepoznavanje delova kôda koji neki test primer pokriva, a zatim pronaći drugi test koji pokriva isti kôd ili neki njegov nadskup. U tom slučaju će prvi test biti redudantan. 
+Ukoliko posmatramo funkciju koja na osnovu datuma određuje naredni dan ona će po potrebi vrišiti uvećanja meseca ili godine ukolko je ulaz poslednji dan u nekom mesecu ili godini. Postoje instrukcije koje se neće izvršiti prilikom svakog poziva funkcije i zbog toga će postojati testovi koji pokrivaju sve kritične delove koda. Prema tome kada govorimo o istoj funkcionalnosti možemo zapravo govoriti o tome da li su izvršene iste naredbe u kôdu. Ovo nas navodi na ideju da proveru redudantnih testova možemo vršiti preko provere koje tačno naredbe kôda neki test izvršava. Ovakvo ispitivanje pokrivenosti kôda predstavlja poptuno objektivu meru. Međutim ovaj pristup provere redudantnosti sa sobom nosi određena ograničenja i poteškoće.
+
+\subsection{Ista pokrivenost kod različitih rezultata}
+
+Posmatrajmo funkciju koja ispituje da li je broj paran. Jedna vrlo kratka implementacija bi mogla biti sledeća:
+
+\begin{lstlisting}
+int paran1(int n) {
+	return n % 2 == 0;
+}
+\end{lstlisting}
+
+Za bilo koju ulaznu vrednost ove funkcije izvršiće se putpuno iste naredbe tj. izvršiće se ista i jedina linija koda. Prema tome ukoliko već postoji test koji proverava navedenu funkciju za neku proizvoljnu vrednost onda će svaki drugi test biti redudantan u odnosu na već postojeći (ukoliko se ograničimo samo na pokrivenost ove funkcije). Tada će takav test samo ispitati da li se izvršila naredba računanja ostatka, a ne i tumačenje samog rezultata pa se postavlja pitanje da li je takav test dovoljan. Ukoliko želimo da vidimo da li je rezultat smislen vršićemo proveru ne u samoj funkciji već nakon njenog poziva. Takva provera podrazumeva grananje koje daje odgovor da li je rezultat ispravan što izaziva pokrivenost razlčitih linija. Međutim ukoliko se naš način provere pokrivenosti ograničava samo na tu funkciju onda možemo dobiti i lažno pozitivan rezultat. Dobijanje iste pokrivenosti za različite rezultate predstavlja jedan od nedostataka ovog pristupa.
+
+Ukoliko neki test pada onda postoji greška u kôdu koju je potrebno ispraviti pre same provere redudantnosti testova. U nastavku se podrazumeva pretpostavka da svi testovi prolaze i ne dovodi se u pitanje da li je pokrivenost testova potpuna već se samo vrši provera suvišnih testova među već postojećim. 
+
+\subsection{Ista pokrivenost prilikom različitog broja iteracija}
+
+Još jedan od načina gde se može javiti ista pokrivenost koda za različite slučajeve upotrebe je prilikom postojanja petlji u programu. Pitanje koje je ovde ključno je da li različit broj iteracija predstavlja ispitivanje različite funkcionalnosti jer ukoliko postoji greška u kodu ona se neće nužno javiti priliom prve ili nekoliko prvih iteracija. Jedan od načina rešavanja ovog problema bi mogao biti da različit broj iteracija posmatramo kao različitu pokrivenost. Međutim nekada i to ne mora biti dovoljno. Posmatrajmo sledeći primer:
+
+Imamo funkciju koja kao parametar prima broj koji predstavlja broj iteracija petlje:
+
+\begin{lstlisting}
+int f(int n) {
+	for (int i=0; i<n; i++) {
+		...
+}
+\end{lstlisting}
+
+I program koji je koristi:
+
+\begin{lstlisting}
+int main() {
+	int a,b,c;
+	scanf("%d %d %d", &a, &b, &c);
+	f(a);
+	f(b);
+	f(c);
+	return 0;
+}
+\end{lstlisting}
+
+Za ulaze programa: \textbf{1 2 9} i \textbf{3 4 5} imamo potpuno istu pokrivenost čak i kada posmatramo broj izvršavanja. Sve linije u \textbf{main} funkciji će biti izvršene jednom a sve linije unutar petlje u funkciji \textbf{f} će biti izvršene po 12 puta. Naravno može se postaviti pitanje smislenosti ovakvih testova i da li ipak treba testirati funkciju f pojedinačno a ne po 3 puta ali u opštem slučaju problem pokrivenosti petlji nije lako rešiti. U radi se petlje pojednostavljuju i samo se posmatra da li je neka linija koda izvršena, a ne i koliko puta. 
+
+\subsection{Poverenje u rezultat}
+
+Zbog navedenih nedostataka postavlja se pitanje da li ovakvim ispitivanjem redudantnosti smemo doneti zaključak da je neki test suvišan. Ukoliko ne poznajemo testove koje proveravamo onda ne možemo doneti preciznu odliku samo na osnovu rezultata predstavljenog postupka. Dodatak koji bi mogao pomoći je da podatak o tome u odnosu na koje testove je neki test redudantan pa dalje možemo izvršiti ručnu proveru ili čak i proveru nekom dubljom analizom koji bi bilo potrebno tada razviti. U svakom slučaju možemo posmatrati rezultat na drugi način a to je da testove koji nisu proglašeni redudantnim sigurno treba zadržati.
+
+\section{Implementacija}
+\label{sec:ideas}
+U nastavku će biti predstavljeni detalji implementacije predstavljene ideje za rešavanje problema pronalaženja redudantnih testova.
+
+Kao što je već pomenuto u sekciji \ref{sec:definition}, redudantni testovi su oni koji pokrivaju iste delove kôda. Prema tome problem se može svesti na prepoznavanje delova kôda koji neki test primer pokriva, a zatim pronaći drugi test koji pokriva isti kôd ili neki njegov nadskup. U tom slučaju će prvi test biti redudantan. 
 
 Ovo nas navodi na to da nam je potreban neki način praćenja naredbi u kôdu (ili blokova kôda) koji su izvršeni što možemo postići nekom instumentalizacijom kôda. Kao osnovna ideja se javlja izmena izvornog kôda koja će imati u sebi neku vrstu globanog niza flegova (eng. flags) koji se aktiviraju kada je neki kôd dostignut ili neki poseban uslov ispunjen. U svom najjednostavnijem obliku ti flegovi mogu postojati na početku svakog bloka kôda i na početku svake grane. Time je jednoznačno određena svaka putanja kroz kôd ne uzimajući u obzir višestruka izvršavanja tela petlji koje će biti posebno spomenute kasnije. Ako se ograničimo na to da su vrednosi flegova 0 ili 1, gde 0 predstavlja da kôd nije izvršen, a 1 da jeste, onda se provera da li su izvršene iste putanje svodi na poređenje niza flegova. Ukoliko su isti i testovi su isti. Provera da li je jedan test sadržan u drugom se takođe jednostavno proverava u linearnom vremenu po broju flegova. Dodatna pogodnost ograničavanja vrednosti na samo 0 ili 1 je da se može izvršiti optimizacija korišćenjem bitovskih operatora. Alternativno svaki fleg može biti poseban brojač koji se uvećava svaki put za jedan što umanjuje efikasnost, ali doprinosi tome da se razlikuju testovi koji imaju različit broj iteracija kroz istu petlju. 
 
@@ -125,7 +175,7 @@ Za ovakvu izmenu kôda se može koristi Clang tačnije njegova biblioteka LibToo
 
 Dok je provera između dva testa linearna to nije slučaj ukoliko se vrši kompletna provera svih testova. Ukoliko želimo da nađemo najmanji skup testova koji vrši isto pokrivanje kao i ceo skup onda nailazimo na problem minimalnog pokrivanja skupa. Ovo je poznati optimizacioni problem za koji je dokazano da je NP kompletan. Naš problem se jednostavno svodi na problem pokrivanja skupa. Skup koji pokrivamo je celokupni niz flegova. Svaki fleg je jedan element, a svaki test je jedan podskup koji sadrži samo one elemente koji odgovaraju aktiviranim flegovima za taj test. Problem pokrivanja skupa ima i približna rešenja koja se mogu iskoristiti zarad bolje vremenske efikasnosti. 
 
-U okviru projekta su implementirana dva algoritma za pokrivanje skupa: optimalni i naivni. Alat koristi samo optimalni, a naivni algoritam predstavlja ostatak procesa razvijanja rešenja, i upotrebljavan je privremeno, dok nije implementirana optimalnija verzija.
+U okviru projekta su implementirana tri algoritma za pokrivanje skupa: optimalni, pohlepni i algoritam provere redudantnosti koji proverava samo parove testova. Alat koristi samo optimalni, a ostali algoritmi predstavljaju ostatak procesa razvijanja rešenja, i upotrebljavani su privremeno, dok nije implementirana optimalnija verzija. Takođe je razvijen alat "with\_test\_info" \space koji je služio za proveru ispravnosti algoritama. Alat se može koristiti za proveru pokrivenosti koda ali se program mora pokrenuti u potpunosti. U direktorijumu mora postojati tekstualna datoteka sa nazivom "test\_info.run" \space koja opisuje način pokretanja programa. U datoteci se unose tri linije za svaki test koje redom predstavljaju: naziv testa, komanda kojom se pokreće program (najčešće "./test") i ulaz programa (koji može biti prazna linija).
 
 \section{Primeri}
 \label{sec:examples}
@@ -313,6 +363,6 @@ Rezultat dobijen našim alatom (metodologijom) treba uzeti sa dozom opreza, i po
 
 \section{Moguća unapređenja}
 \label{sec:unapredjenja}
-Neki od mogućih načina za poboljšanje preciznosti i kvaliteta samog alata (i metodologije) su detaljnija analiza petlji i poziva funkcija, kao i detektovanje koji to testovi pokrivaju testove koji su proglašeni redudantnim. Takođe, istraživanjem novih tehnika za rešavanje problema redudantnosti testova se potencijalno može dobiti mnogo precizniji i efikasniji alat (npr. tehnike koje ne podrazumevaju pokretanje testova).
+Neki od mogućih načina za poboljšanje preciznosti i kvaliteta samog alata (i metodologije) su detaljnija analiza petlji i poziva funkcija, kao i detektovanje koji to testovi pokrivaju testove koji su proglašeni redudantnim (videti sekciju \ref{sec:definition}). Takođe, istraživanjem novih tehnika za rešavanje problema redudantnosti testova se potencijalno može dobiti mnogo precizniji i efikasniji alat (npr. tehnike koje ne podrazumevaju pokretanje testova).
 
 \end{document}
