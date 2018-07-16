@@ -3,7 +3,7 @@ This project is a part of our Master Studies' course of Software Verification. T
 
 In the .tex file there are sections which represent out train of thoughts. There we have presented various ideas, experiments done and tools used in a process. The whole text is written in Serbian. 
 
-## using test_info.run.
+## usage of test runs
 	
     Requirements:
         - clang-format-6.0
@@ -24,7 +24,7 @@ In the .tex file there are sections which represent out train of thoughts. There
         examples/03
         examples/04
 
-## using custom unit testing framework.
+## usage of custom unit testing framework
 
     Requirements:
         - clang-format-6.0
