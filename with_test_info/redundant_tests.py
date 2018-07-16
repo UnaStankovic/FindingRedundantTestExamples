@@ -1,12 +1,13 @@
 #Mini script file which generates .c.gcov files, automatically, from source code and test examples.
+
 import os
 from file_work import find_files
-from run import run_gcc, run_tests, find_redundant
+from subprocess_helpers import run_gcc, run_tests, find_redundant
 
 			
 def main():
 	print(os.getcwd())
-	print("Insert file extension and path:")
+	print("Insert file extension (c or cpp):")
 	ext = input()
 	print("Insert path without last /:")
 	path = input()

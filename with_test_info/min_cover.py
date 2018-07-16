@@ -110,6 +110,7 @@ def min_set_coverage_greedy(all_data):
             end = True
         else:
             #print("adding array ", max_index)
+            res = covered_elements<all_data[max_index]
             covered_elements = covered_elements + res.astype(np.int)
             added_sets[max_index] = 1
     return added_sets

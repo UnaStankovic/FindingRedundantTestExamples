@@ -1,3 +1,5 @@
+#includes helper functions for working with various files
+
 import os 
 import pickle
 

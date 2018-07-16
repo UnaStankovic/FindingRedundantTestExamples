@@ -11,15 +11,18 @@ In the .tex file there are sections which represent out train of thoughts. There
         - numpy package
 
     Usage:
-        - run python script with_test_info/gen_gcov.py
-            python3 with_test_info/gen_gcov.py
+        - run python script with_test_info/redundant_tests.py
+		- run example:
+            cd with_test_info
+            python3 redundant_tests.py
             c
-            Examples/01
+            examples/01
 			
     Available examples:
-        Examples/01
-        Examples/02
-        Examples/03
+        examples/01
+        examples/02
+        examples/03
+        examples/04
 
 ## using custom unit testing framework.
 
